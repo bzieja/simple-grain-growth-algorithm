@@ -4,76 +4,90 @@ import java.util.Random;
 
 public class GrainMap {
     public static int IdCounter = 0;
+    //int emptyCellsCounter;
 
     int numberOfInitialGrains;
-    int numberOfCellsAtX; //numberOfCellsAtX
-    int numberOfCellsAtY; //numberOfCellsAtY
+    int numberOfCellsAtX;
+    int numberOfCellsAtY;
     String neighbourType;
 
-    public static Cell[][] currentStep;
-    public static Cell[][] previousStep;
+    //public Cell[][] nextStep;
+    public Cell[][] currentStep;
 
-    public GrainMap(int numberOfInitialGrains, int numberOfCellsAtX, int numberOfCellsAtY, String neighbourType) {
-        this.numberOfInitialGrains = numberOfInitialGrains;
-        this.numberOfCellsAtX = numberOfCellsAtX;
-        this.numberOfCellsAtY = numberOfCellsAtY;
-        this.neighbourType = neighbourType;
-        
-        GrainMap.currentStep = new Cell[numberOfCellsAtX][numberOfCellsAtY];
+    public GrainMap(GlobalData globalData) {
+        this.numberOfInitialGrains = globalData.getNumberOfInitialGrains();
+        this.numberOfCellsAtX = globalData.getNumberOfGrainsAtX();
+        this.numberOfCellsAtY = globalData.getNumberOfGrainsAtY();
+        this.neighbourType = globalData.getNeighbourType();
+
+        this.currentStep = new Cell[numberOfCellsAtX][numberOfCellsAtY];
 
         for (int i = 0; i < numberOfCellsAtX; i++) {
             for (int j = 0; j < numberOfCellsAtY; j++) {
-                GrainMap.currentStep[i][j] = new Cell(i, j);
+                this.currentStep[i][j] = new Cell(i, j);
+                //this.emptyCellsCounter++;
             }
         }
+
 
         //initialize grains
         Random random = new Random(System.currentTimeMillis());
         for (int i = 0; i < numberOfInitialGrains; i++) {
-            int randX = random.nextInt(numberOfCellsAtX);
-            int randY = random.nextInt(numberOfCellsAtY);
-            currentStep[randX][randY].setId(IdCounter);
+            int randX;
+            int randY;
+
+            while (true) {
+                randX = random.nextInt(numberOfCellsAtX);
+                randY = random.nextInt(numberOfCellsAtY);
+                if (this.currentStep[randX][randY].isEmpty()) {
+                    break;
+                }
+            }
+
+            this.currentStep[randX][randY].setId(IdCounter);
+            //this.emptyCellsCounter--;
             IdCounter++;
         }
 
-
+        //add Inclusions
+        Inclusion inclusion = new Inclusion(globalData.getNumberOfInclusions(), globalData.getTypeOfInclusion(), globalData.getSizeOfInclusion(), this.currentStep, this.hasEmptyCells());
 
     }
 
 
-    public void nextStep(){
-        GrainMap.previousStep = GrainMap.currentStep;
+    public void nextStep() {
+        Cell[][] nextStep = new Cell[numberOfCellsAtX][numberOfCellsAtY];
 
         for (int i = 0; i < numberOfCellsAtX; i++) {
             for (int j = 0; j < numberOfCellsAtY; j++) {
+                nextStep[i][j] = new Cell(currentStep[i][j].getX(), currentStep[i][j].getY());
+                nextStep[i][j].setId(currentStep[i][j].getId());
 
-                if (GrainMap.previousStep[i][j].isEmpty()) {
+                if (this.currentStep[i][j].isEmpty()) { //state of cell can be changed only if it's empty
 
+                    Neighborhood neighborhood = new Neighborhood(this.neighbourType, this.currentStep, i, j, numberOfInitialGrains);
+                    nextStep[i][j].setId(neighborhood.getNextState());
+                    //emptyCellsCounter--;
                     //neighbour logic for each cell
-                    if (this.neighbourType.equals("absorbing")) {
-
-                        System.out.println("Absorbing boundary conditions - to do");
-
-
-                    } else if (this.neighbourType.equals("periodic")) {
-
-                        Neighborhood neighborhood = new Neighborhood();
-                        neighborhood.exploreTheNeighbourhoodWithPeriodicBoundaries(GrainMap.previousStep, i, j, numberOfInitialGrains);
-                        GrainMap.currentStep[i][j].setId(neighborhood.getNextState());
-
-                    } else {
-                        System.out.println("Unknown type of boundary conditions");
-                    }
 
                 }
             }
         }
+
+        this.currentStep = nextStep;
     }
 
     public boolean hasEmptyCells() {
+       /*
+        if (this.emptyCellsCounter > 0) {
+            return true;
+        } else {
+            return false;
+        }*/
+
         for (int i = 0; i < numberOfCellsAtX; i++) {
             for (int j = 0; j < numberOfCellsAtY; j++) {
-                if (currentStep[i][j].getId() == -1) {
+                if (this.currentStep[i][j].isEmpty()) {
                     return true;
                 }
             }
@@ -81,11 +95,17 @@ public class GrainMap {
         return false;
     }
 
-    public static Cell[][] getCurrentStep() {
-        return currentStep;
+    public Cell[][] getCurrentStep() {
+        return this.currentStep;
     }
 
-    public static Cell[][] getPreviousStep() {
-        return previousStep;
+    public void printCurrentStepForDebug() {
+        for (int i = 0; i < numberOfCellsAtX; i++) {
+            for (int j = 0; j < numberOfCellsAtY; j++) {
+                System.out.print(this.currentStep[i][j].id + " ");
+            }
+            System.out.print("\n");
+        }
+
     }
 }

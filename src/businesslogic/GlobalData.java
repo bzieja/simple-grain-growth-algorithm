@@ -1,40 +1,72 @@
 package businesslogic;
 
 public class GlobalData {
-    static int numberOfInitialGrains;
-    static int numberOfGrainsAtX;
-    static int numberOfGrainsAtY;
-    static  String neighbourType;
+    private int numberOfInitialGrains;
+    private int numberOfGrainsAtX;
+    private int numberOfGrainsAtY;
+    private String neighbourType;
 
-    public static int getNumberOfInitialGrains() {
-        return numberOfInitialGrains;
+    private int numberOfInclusions;
+    private String typeOfInclusion;
+    private int sizeOfInclusion;
+
+    public GlobalData() {
+        this.numberOfInclusions = 0;
     }
 
-    public static void setNumberOfInitialGrains(int numberOfInitialGrains) {
-        GlobalData.numberOfInitialGrains = numberOfInitialGrains;
+    public int getNumberOfInitialGrains() {
+        return this.numberOfInitialGrains;
     }
 
-    public static int getNumberOfGrainsAtX() {
-        return numberOfGrainsAtX;
+    public void setNumberOfInitialGrains(int numberOfInitialGrains) {
+        this.numberOfInitialGrains = numberOfInitialGrains;
     }
 
-    public static void setNumberOfGrainsAtX(int numberOfGrainsAtX) {
-        GlobalData.numberOfGrainsAtX = numberOfGrainsAtX;
+    public int getNumberOfGrainsAtX() {
+        return this.numberOfGrainsAtX;
     }
 
-    public static int getNumberOfGrainsAtY() {
-        return numberOfGrainsAtY;
+    public void setNumberOfGrainsAtX(int numberOfGrainsAtX) {
+        this.numberOfGrainsAtX = numberOfGrainsAtX;
     }
 
-    public static void setNumberOfGrainsAtY(int numberOfGrainsAtY) {
-        GlobalData.numberOfGrainsAtY = numberOfGrainsAtY;
+    public int getNumberOfGrainsAtY() {
+        return this.numberOfGrainsAtY;
     }
 
-    public static String getNeighbourType() {
-        return neighbourType;
+    public void setNumberOfGrainsAtY(int numberOfGrainsAtY) {
+        this.numberOfGrainsAtY = numberOfGrainsAtY;
     }
 
-    public static void setNeighbourType(String neighbourType) {
-        GlobalData.neighbourType = neighbourType;
+    public String getNeighbourType() {
+        return this.neighbourType;
+    }
+
+    public void setNeighbourType(String neighbourType) {
+        this.neighbourType = neighbourType;
+    }
+
+    public int getNumberOfInclusions() {
+        return numberOfInclusions;
+    }
+
+    public void setNumberOfInclusions(int numberOfInclusions) {
+        this.numberOfInclusions = numberOfInclusions;
+    }
+
+    public String getTypeOfInclusion() {
+        return typeOfInclusion;
+    }
+
+    public void setTypeOfInclusion(String typeOfInclusion) {
+        this.typeOfInclusion = typeOfInclusion;
+    }
+
+    public int getSizeOfInclusion() {
+        return sizeOfInclusion;
+    }
+
+    public void setSizeOfInclusion(int sizeOfInclusion) {
+        this.sizeOfInclusion = sizeOfInclusion;
     }
 }

@@ -1,6 +1,7 @@
 package gui;
 
 import businesslogic.Cell;
+import businesslogic.GlobalData;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -17,31 +18,33 @@ public class View {
     int[][] cellsRGB;
 
 
-    public View(Canvas canvas, int numberOfGrainsAtX, int numberOfGrainsAtY, int numberOfInitialGrains) {
+    public View(Canvas canvas, GlobalData globalData) {
         this.canvas = canvas;
-        this.numberOfGrainsAtX = numberOfGrainsAtX;
-        this.numberOfGrainsAtY = numberOfGrainsAtY;
-        this.numberOfInitialGrains = numberOfInitialGrains;
+        this.numberOfGrainsAtX = globalData.getNumberOfGrainsAtX();
+        this.numberOfGrainsAtY = globalData.getNumberOfGrainsAtY();
+        this.numberOfInitialGrains = globalData.getNumberOfInitialGrains();
 
-        cellXDimension = canvas.getWidth() / numberOfGrainsAtX;
-        cellYDimension = canvas.getHeight() / numberOfGrainsAtY;
+        cellXDimension = canvas.getHeight() / numberOfGrainsAtX;
+        cellYDimension = canvas.getWidth() / numberOfGrainsAtY;
 
-        System.out.println("cellXDimension: " + cellXDimension);
-        System.out.println("cellYDimension: " + cellYDimension);
-
+        canvas.getGraphicsContext2D().clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         setRGBForEachCellId();
     }
 
     public void generateView(Cell[][] board) {
-        GraphicsContext graphicsContext = canvas.getGraphicsContext2D();
 
+        //canvas.requestFocus();
+
+        GraphicsContext graphicsContext = canvas.getGraphicsContext2D();
         for (int i = 0; i < this.numberOfGrainsAtX; i++) {
             for (int j = 0; j < this.numberOfGrainsAtY; j++) {
 
                 graphicsContext.beginPath();
 
-                if (board[i][j].getId() == -1) {
+                if (board[i][j].isEmpty()) {
                     graphicsContext.setFill(Color.rgb(255, 255, 255));
+                } else if (board[i][j].isInclusion()) {
+                    graphicsContext.setFill(Color.rgb(0, 0, 0));
                 } else {
                     int r = cellsRGB[board[i][j].getId()][0];
                     int g = cellsRGB[board[i][j].getId()][1];
@@ -49,9 +52,10 @@ public class View {
                     graphicsContext.setFill(Color.rgb(r, g, b));
                 }
 
-                graphicsContext.rect(j * cellXDimension, i * cellYDimension, cellXDimension, cellYDimension);
+                graphicsContext.rect(j * cellYDimension, i * cellXDimension, cellYDimension, cellXDimension);
                 graphicsContext.fill();
             }
+            //canvas.requestFocus();
         }
 
     }
@@ -60,7 +64,7 @@ public class View {
         cellsRGB = new int[this.numberOfInitialGrains][];
         for (int i = 0; i < numberOfInitialGrains; i++) {
             Random random = new Random();
-            cellsRGB[i] = new int[]{random.nextInt(255), random.nextInt(255), random.nextInt(255)};
+            cellsRGB[i] = new int[]{1 + random.nextInt(254), 1 + random.nextInt(254), 1 + random.nextInt(254)};
         }
     }
 }
