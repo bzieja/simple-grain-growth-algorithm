@@ -2,6 +2,7 @@ package gui;
 
 import businesslogic.Cell;
 import businesslogic.GlobalData;
+import businesslogic.GrainMap;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -9,7 +10,9 @@ import javafx.scene.paint.Color;
 import java.util.Random;
 
 public class View {
+    private static View instance;
     Canvas canvas;
+    GrainMap grainMap;
     int numberOfGrainsAtX;
     int numberOfGrainsAtY;
     double cellXDimension;
@@ -17,12 +20,12 @@ public class View {
     int numberOfInitialGrains;
     int[][] cellsRGB;
 
-
-    public View(Canvas canvas, GlobalData globalData) {
+    private View(Canvas canvas, GlobalData globalData, GrainMap grainMap) {
         this.canvas = canvas;
         this.numberOfGrainsAtX = globalData.getNumberOfGrainsAtX();
         this.numberOfGrainsAtY = globalData.getNumberOfGrainsAtY();
         this.numberOfInitialGrains = globalData.getNumberOfInitialGrains();
+        this.grainMap = grainMap;
 
         cellXDimension = canvas.getHeight() / numberOfGrainsAtX;
         cellYDimension = canvas.getWidth() / numberOfGrainsAtY;
@@ -31,9 +34,19 @@ public class View {
         setRGBForEachCellId();
     }
 
-    public void generateView(Cell[][] board) {
+    public static View getInstance(Canvas canvas, GlobalData globalData, GrainMap grainMap) {
+        if (View.instance == null) {
+            View.instance = new View(canvas, globalData, grainMap);
+            return View.instance;
+        } else {
+            return View.instance;
+        }
+    }
 
+    //public void generateView(Cell[][] board) {
+    public void generateView() {
         //canvas.requestFocus();
+        Cell[][] board = this.grainMap.getCurrentStep();
 
         GraphicsContext graphicsContext = canvas.getGraphicsContext2D();
         for (int i = 0; i < this.numberOfGrainsAtX; i++) {
@@ -66,5 +79,9 @@ public class View {
             Random random = new Random();
             cellsRGB[i] = new int[]{1 + random.nextInt(254), 1 + random.nextInt(254), 1 + random.nextInt(254)};
         }
+    }
+
+    public void clear() {
+        View.instance = null;
     }
 }

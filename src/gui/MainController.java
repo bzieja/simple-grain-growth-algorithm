@@ -2,14 +2,11 @@ package gui;
 
 import businesslogic.GlobalData;
 import businesslogic.GrainMap;
-import javafx.event.ActionEvent;
+import businesslogic.inclusion.Inclusion;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -31,62 +28,62 @@ public class MainController implements Initializable {
     public CheckBox startWithInclusionsCheckBox;
     @FXML
     Canvas canvas;
-
     GrainMap grainMap;
-    GlobalData globalData;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        this.globalData = new GlobalData();
         canvas.setVisible(true);
     }
 
     public void getGlobalDataFromGUI() {
         int numberOfInitialGrains = Integer.parseInt(numberOfGrainsField.getText());
-        this.globalData.setNumberOfInitialGrains(numberOfInitialGrains);
+        GlobalData.getInstance().setNumberOfInitialGrains(numberOfInitialGrains);
 
         int dimensionX = Integer.parseInt(dimensionXField.getText());
-        this.globalData.setNumberOfGrainsAtX(dimensionX);
+        GlobalData.getInstance().setNumberOfGrainsAtX(dimensionX);
 
         int dimensionY = Integer.parseInt(dimensionYField.getText());
-        this.globalData.setNumberOfGrainsAtY(dimensionY);
+        GlobalData.getInstance().setNumberOfGrainsAtY(dimensionY);
 
         if (periodicRadioButton.isSelected()) {
-            this.globalData.setNeighbourType("periodic");
+            GlobalData.getInstance().setNeighbourType("periodic");
+        } else if(absorbingRadioButton.isSelected()) {
+            GlobalData.getInstance().setNeighbourType("absorbing");
+        }
+
+        GlobalData.getInstance().setNumberOfInclusions(Integer.parseInt(numberOfInclusionsField.getText()));
+        GlobalData.getInstance().setSizeOfInclusion(Integer.parseInt(sizeOfInclusionsField.getText()));
+
+        if (circleInclusionRadioButton.isSelected()) {
+            GlobalData.getInstance().setTypeOfInclusion("circle");
+        } else if (squareInclusionRadioButton.isSelected()) {
+            GlobalData.getInstance().setTypeOfInclusion("square");
+        }
+
+        if(startWithInclusionsCheckBox.isSelected()) {
+            GlobalData.getInstance().setStartWithInclusions(true);
         } else {
-            this.globalData.setNeighbourType("absorbing");
+            GlobalData.getInstance().setStartWithInclusions(false);
         }
-        
-        if (startWithInclusionsCheckBox.isSelected()) {
-            this.globalData.setNumberOfInclusions(Integer.parseInt(numberOfInclusionsField.getText()));
-            this.globalData.setSizeOfInclusion(Integer.parseInt(sizeOfInclusionsField.getText()));
-
-            if (circleInclusionRadioButton.isSelected()) {
-                this.globalData.setTypeOfInclusion("circle");
-            } else {
-                this.globalData.setTypeOfInclusion("square");
-            }
-
-        }
-
 
 
     }
 
-
     public void startSimulation() {
+        softClearData();
         getGlobalDataFromGUI();
 
-        this.grainMap = new GrainMap(this.globalData);
-        View view = new View(this.canvas, this.globalData);
+        this.grainMap = new GrainMap(GlobalData.getInstance());
 
-        view.generateView(this.grainMap.getCurrentStep());
+        View view = View.getInstance(this.canvas, GlobalData.getInstance(), this.grainMap);
+        view.generateView();
 
         int generationsCounter = 0;
         while (grainMap.hasEmptyCells()) {
 
             grainMap.nextStep();
-            view.generateView(grainMap.getCurrentStep());
+            view.generateView();
+            //view.generateView(grainMap.getCurrentStep());
 
            /* CanvasRedrawThread canvasRedrawThread = new CanvasRedrawThread(view, grainMap.currentStep);
             Thread thread = new Thread(canvasRedrawThread);
@@ -104,10 +101,28 @@ public class MainController implements Initializable {
             generationsCounter++;
             System.out.println(generationsCounter);
 
-
         }
 
-        GrainMap.IdCounter = 0;
+    }
+
+    public void addInclusionsToExistingCellBoard() {
+        getGlobalDataFromGUI();
+
+        if (this.grainMap != null) { //do sth
+
+            Inclusion inclusion = new Inclusion(GlobalData.getInstance(), grainMap.currentStep, grainMap.hasEmptyCells());
+            inclusion.add();
+            View.getInstance(this.canvas, GlobalData.getInstance(), this.grainMap).generateView();
+
+        } else { //add inclusions after grain algo
+
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Information");
+            alert.setHeaderText("You must first generate grains cells!");
+            alert.setContentText("To generate grains cells click \"start simulation\" button");
+            alert.show();
+        }
+
     }
 
     public void clearData() {
@@ -116,14 +131,10 @@ public class MainController implements Initializable {
         canvas.getGraphicsContext2D().clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
     }
 
-    public void addInclusions() {
-        if (grainMap.getCurrentStep() == null) { //add inclusions before grain algorithm
-
-
-        } else { //add inclusions after grain algo
-
-        }
-
-
+    public void softClearData() {
+        GrainMap.IdCounter = 0;
+        GlobalData.getInstance().setNumberOfInclusions(0);
+        View.getInstance(this.canvas, GlobalData.getInstance(), this.grainMap).clear();
     }
+
 }

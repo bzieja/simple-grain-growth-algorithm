@@ -1,5 +1,7 @@
 package businesslogic;
 
+import businesslogic.inclusion.Inclusion;
+
 import java.util.Random;
 
 public class GrainMap {
@@ -11,7 +13,6 @@ public class GrainMap {
     int numberOfCellsAtY;
     String neighbourType;
 
-    //public Cell[][] nextStep;
     public Cell[][] currentStep;
 
     public GrainMap(GlobalData globalData) {
@@ -49,11 +50,13 @@ public class GrainMap {
             IdCounter++;
         }
 
-        //add Inclusions
-        Inclusion inclusion = new Inclusion(globalData.getNumberOfInclusions(), globalData.getTypeOfInclusion(), globalData.getSizeOfInclusion(), this.currentStep, this.hasEmptyCells());
+        //add Inclusions at the start
+        if (globalData.isStartWithInclusions()) {
+            Inclusion inclusion = new Inclusion(globalData, this.currentStep, this.hasEmptyCells());
+            inclusion.add();
+        }
 
     }
-
 
     public void nextStep() {
         Cell[][] nextStep = new Cell[numberOfCellsAtX][numberOfCellsAtY];

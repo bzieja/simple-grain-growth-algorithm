@@ -1,17 +1,26 @@
 package businesslogic;
 
 public class GlobalData {
+    static GlobalData instance;
+
     private int numberOfInitialGrains;
     private int numberOfGrainsAtX;
     private int numberOfGrainsAtY;
     private String neighbourType;
-
     private int numberOfInclusions;
     private String typeOfInclusion;
     private int sizeOfInclusion;
+    boolean isStartWithInclusions;
 
-    public GlobalData() {
-        this.numberOfInclusions = 0;
+    private GlobalData() {}
+
+    public static GlobalData getInstance() {
+        if (GlobalData.instance == null) {
+            GlobalData.instance = new GlobalData();
+            return GlobalData.instance;
+        } else {
+            return GlobalData.instance;
+        }
     }
 
     public int getNumberOfInitialGrains() {
@@ -68,5 +77,13 @@ public class GlobalData {
 
     public void setSizeOfInclusion(int sizeOfInclusion) {
         this.sizeOfInclusion = sizeOfInclusion;
+    }
+
+    public boolean isStartWithInclusions() {
+        return isStartWithInclusions;
+    }
+
+    public void setStartWithInclusions(boolean startWithInclusions) {
+        isStartWithInclusions = startWithInclusions;
     }
 }
