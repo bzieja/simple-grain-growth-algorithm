@@ -3,6 +3,7 @@ package gui;
 import businesslogic.GlobalData;
 import businesslogic.GrainMap;
 import businesslogic.inclusion.Inclusion;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
@@ -80,9 +81,34 @@ public class MainController implements Initializable {
 
         int generationsCounter = 0;
         while (grainMap.hasEmptyCells()) {
+/*
+
+            Runnable runnable = new Runnable() {
+                @Override
+                public void run() {
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            grainMap.nextStep();
+                            view.generateView();
+                        }
+                    });
+                }
+            };
+
+            Thread thread = new Thread(runnable);
+            thread.start();
+            try {
+                thread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+*/
 
             grainMap.nextStep();
             view.generateView();
+
+
             //view.generateView(grainMap.getCurrentStep());
 
            /* CanvasRedrawThread canvasRedrawThread = new CanvasRedrawThread(view, grainMap.currentStep);
@@ -135,6 +161,7 @@ public class MainController implements Initializable {
         GrainMap.IdCounter = 0;
         GlobalData.getInstance().setNumberOfInclusions(0);
         View.getInstance(this.canvas, GlobalData.getInstance(), this.grainMap).clear();
+        canvas.getGraphicsContext2D().clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
     }
 
 }
