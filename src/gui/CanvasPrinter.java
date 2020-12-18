@@ -1,16 +1,16 @@
 package gui;
 
-import businesslogic.Cell;
-import businesslogic.GlobalData;
-import businesslogic.GrainMap;
+import app.Cell;
+import app.AppConfiguration;
+import app.GrainMap;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 import java.util.Random;
 
-public class View {
-    private static View instance;
+public class CanvasPrinter {
+    private static CanvasPrinter instance;
     Canvas canvas;
     GrainMap grainMap;
     int numberOfGrainsAtX;
@@ -18,13 +18,13 @@ public class View {
     double cellXDimension;
     double cellYDimension;
     int numberOfInitialGrains;
-    int[][] cellsRGB;
+    int[][] cellsRGB;   //[cellId][r, g, b]
 
-    private View(Canvas canvas, GlobalData globalData, GrainMap grainMap) {
+    private CanvasPrinter(Canvas canvas, AppConfiguration appConfiguration, GrainMap grainMap) {
         this.canvas = canvas;
-        this.numberOfGrainsAtX = globalData.getNumberOfGrainsAtX();
-        this.numberOfGrainsAtY = globalData.getNumberOfGrainsAtY();
-        this.numberOfInitialGrains = globalData.getNumberOfInitialGrains();
+        this.numberOfGrainsAtX = appConfiguration.getNumberOfGrainsAtX();
+        this.numberOfGrainsAtY = appConfiguration.getNumberOfGrainsAtY();
+        this.numberOfInitialGrains = appConfiguration.getNumberOfInitialGrains();
         this.grainMap = grainMap;
 
         cellXDimension = canvas.getHeight() / numberOfGrainsAtX;
@@ -34,18 +34,16 @@ public class View {
         setRGBForEachCellId();
     }
 
-    public static View getInstance(Canvas canvas, GlobalData globalData, GrainMap grainMap) {
-        if (View.instance == null) {
-            View.instance = new View(canvas, globalData, grainMap);
-            return View.instance;
+    public static CanvasPrinter getInstance(Canvas canvas, AppConfiguration appConfiguration, GrainMap grainMap) {
+        if (CanvasPrinter.instance == null) {
+            CanvasPrinter.instance = new CanvasPrinter(canvas, appConfiguration, grainMap);
+            return CanvasPrinter.instance;
         } else {
-            return View.instance;
+            return CanvasPrinter.instance;
         }
     }
 
-    //public void generateView(Cell[][] board) {
     public void generateView() {
-        //canvas.requestFocus();
         Cell[][] board = this.grainMap.getCurrentStep();
 
         GraphicsContext graphicsContext = canvas.getGraphicsContext2D();
@@ -68,20 +66,27 @@ public class View {
                 graphicsContext.rect(j * cellYDimension, i * cellXDimension, cellYDimension, cellXDimension);
                 graphicsContext.fill();
             }
-            //canvas.requestFocus();
         }
 
     }
 
     private void setRGBForEachCellId() {
         cellsRGB = new int[this.numberOfInitialGrains][];
+        Random random = new Random(this.numberOfInitialGrains);
         for (int i = 0; i < numberOfInitialGrains; i++) {
-            Random random = new Random();
             cellsRGB[i] = new int[]{1 + random.nextInt(254), 1 + random.nextInt(254), 1 + random.nextInt(254)};
         }
     }
 
+    public int[][] getCellsRGB() {
+        return cellsRGB;
+    }
+
+    public void setCellsRGB(int[][] cellsRGB) {
+        this.cellsRGB = cellsRGB;
+    }
+
     public void clear() {
-        View.instance = null;
+        CanvasPrinter.instance = null;
     }
 }

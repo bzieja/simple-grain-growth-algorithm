@@ -1,6 +1,6 @@
-package businesslogic.inclusion;
+package app.inclusion;
 
-import businesslogic.Cell;
+import app.Cell;
 
 public interface Shape {
 

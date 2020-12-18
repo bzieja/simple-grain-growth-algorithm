@@ -1,7 +1,7 @@
-package businesslogic.inclusion;
+package app.inclusion;
 
-import businesslogic.Cell;
-import businesslogic.GlobalData;
+import app.Cell;
+import app.AppConfiguration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,11 +16,11 @@ public class Inclusion {
     boolean hasEmptyCells;
     Shape shape;
 
-    public Inclusion(GlobalData globalData, Cell[][] board, boolean hasEmptyCells) {
+    public Inclusion(AppConfiguration appConfiguration, Cell[][] board, boolean hasEmptyCells) {
         this.board = board;
-        this.numberOfInclusion = globalData.getNumberOfInclusions();
-        this.typeOfInclusion = globalData.getTypeOfInclusion();
-        this.sizeOfInclusion = globalData.getSizeOfInclusion();
+        this.numberOfInclusion = appConfiguration.getNumberOfInclusions();
+        this.typeOfInclusion = appConfiguration.getTypeOfInclusion();
+        this.sizeOfInclusion = appConfiguration.getSizeOfInclusion();
         this.hasEmptyCells = hasEmptyCells;
 
         switch (typeOfInclusion) {

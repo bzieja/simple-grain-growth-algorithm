@@ -27,3 +27,6 @@ hs_err_pid*
 .idea
 *.iml
 .out
+src/gui/TestClass.java
+src/app/DependencyContainer.java
+simulations

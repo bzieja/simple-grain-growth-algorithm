@@ -1,7 +1,7 @@
-package businesslogic;
+package app;
 
-public class GlobalData {
-    static GlobalData instance;
+public class AppConfiguration {
+    static AppConfiguration instance;
 
     private int numberOfInitialGrains;
     private int numberOfGrainsAtX;
@@ -12,14 +12,14 @@ public class GlobalData {
     private int sizeOfInclusion;
     boolean isStartWithInclusions;
 
-    private GlobalData() {}
+    private AppConfiguration() {}
 
-    public static GlobalData getInstance() {
-        if (GlobalData.instance == null) {
-            GlobalData.instance = new GlobalData();
-            return GlobalData.instance;
+    public static AppConfiguration getInstance() {
+        if (AppConfiguration.instance == null) {
+            AppConfiguration.instance = new AppConfiguration();
+            return AppConfiguration.instance;
         } else {
-            return GlobalData.instance;
+            return AppConfiguration.instance;
         }
     }
 

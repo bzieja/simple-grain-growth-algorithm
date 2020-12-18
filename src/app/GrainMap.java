@@ -1,6 +1,6 @@
-package businesslogic;
+package app;
 
-import businesslogic.inclusion.Inclusion;
+import app.inclusion.Inclusion;
 
 import java.util.Random;
 
@@ -8,18 +8,17 @@ public class GrainMap {
     public static int IdCounter = 0;
     //int emptyCellsCounter;
 
-    int numberOfInitialGrains;
-    int numberOfCellsAtX;
-    int numberOfCellsAtY;
-    String neighbourType;
-
+    public int numberOfInitialGrains;
+    public int numberOfCellsAtX;
+    public int numberOfCellsAtY;
+    public String neighbourType;
     public Cell[][] currentStep;
 
-    public GrainMap(GlobalData globalData) {
-        this.numberOfInitialGrains = globalData.getNumberOfInitialGrains();
-        this.numberOfCellsAtX = globalData.getNumberOfGrainsAtX();
-        this.numberOfCellsAtY = globalData.getNumberOfGrainsAtY();
-        this.neighbourType = globalData.getNeighbourType();
+    public GrainMap(AppConfiguration appConfiguration) {
+        this.numberOfInitialGrains = appConfiguration.getNumberOfInitialGrains();
+        this.numberOfCellsAtX = appConfiguration.getNumberOfGrainsAtX();
+        this.numberOfCellsAtY = appConfiguration.getNumberOfGrainsAtY();
+        this.neighbourType = appConfiguration.getNeighbourType();
 
         this.currentStep = new Cell[numberOfCellsAtX][numberOfCellsAtY];
 
@@ -29,7 +28,6 @@ public class GrainMap {
                 //this.emptyCellsCounter++;
             }
         }
-
 
         //initialize grains
         Random random = new Random(System.currentTimeMillis());
@@ -44,34 +42,29 @@ public class GrainMap {
                     break;
                 }
             }
-
             this.currentStep[randX][randY].setId(IdCounter);
             //this.emptyCellsCounter--;
             IdCounter++;
         }
 
         //add Inclusions at the start
-        if (globalData.isStartWithInclusions()) {
-            Inclusion inclusion = new Inclusion(globalData, this.currentStep, this.hasEmptyCells());
+        if (appConfiguration.isStartWithInclusions()) {
+            Inclusion inclusion = new Inclusion(appConfiguration, this.currentStep, this.hasEmptyCells());
             inclusion.add();
         }
-
     }
 
-    public void nextStep() {
+    public synchronized void nextStep() {
         Cell[][] nextStep = new Cell[numberOfCellsAtX][numberOfCellsAtY];
 
         for (int i = 0; i < numberOfCellsAtX; i++) {
             for (int j = 0; j < numberOfCellsAtY; j++) {
-                nextStep[i][j] = new Cell(currentStep[i][j].getX(), currentStep[i][j].getY());
-                nextStep[i][j].setId(currentStep[i][j].getId());
+                nextStep[i][j]  = currentStep[i][j].copy();
 
                 if (this.currentStep[i][j].isEmpty()) { //state of cell can be changed only if it's empty
 
                     Neighborhood neighborhood = new Neighborhood(this.neighbourType, this.currentStep, i, j, numberOfInitialGrains);
                     nextStep[i][j].setId(neighborhood.getNextState());
-                    //emptyCellsCounter--;
-                    //neighbour logic for each cell
 
                 }
             }
@@ -80,7 +73,7 @@ public class GrainMap {
         this.currentStep = nextStep;
     }
 
-    public boolean hasEmptyCells() {
+    public synchronized boolean hasEmptyCells() {
        /*
         if (this.emptyCellsCounter > 0) {
             return true;
@@ -98,7 +91,7 @@ public class GrainMap {
         return false;
     }
 
-    public Cell[][] getCurrentStep() {
+    public synchronized Cell[][] getCurrentStep() {
         return this.currentStep;
     }
 

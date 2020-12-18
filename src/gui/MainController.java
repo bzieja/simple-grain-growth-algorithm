@@ -1,16 +1,38 @@
 package gui;
 
-import businesslogic.GlobalData;
-import businesslogic.GrainMap;
-import businesslogic.inclusion.Inclusion;
+import app.AppConfiguration;
+import app.Cell;
+import app.GrainMap;
+import app.inclusion.Inclusion;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+import org.w3c.dom.css.RGBColor;
 
+import javax.imageio.ImageIO;
+import javax.swing.text.View;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
+import java.io.*;
 import java.net.URL;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.ResourceBundle;
+import java.util.concurrent.Executors;
+
+import static com.sun.javafx.iio.ios.IosImageLoader.RGB;
 
 public class MainController implements Initializable {
 
@@ -27,118 +49,111 @@ public class MainController implements Initializable {
     public Button startSimulationButton;
     public Button clearDataButton;
     public CheckBox startWithInclusionsCheckBox;
-    @FXML
-    Canvas canvas;
+    public Canvas canvas;
+    public MenuItem exportDataFileButton;
+    public MenuItem exportBitmapButton;
+    public MenuItem importDataFileButton;
+    public MenuItem importBitmapButton;
+    public AnchorPane anchorPane;
     GrainMap grainMap;
 
-    @Override
+    @FXML
     public void initialize(URL url, ResourceBundle resourceBundle) {
         canvas.setVisible(true);
     }
 
-    public void getGlobalDataFromGUI() {
-        int numberOfInitialGrains = Integer.parseInt(numberOfGrainsField.getText());
-        GlobalData.getInstance().setNumberOfInitialGrains(numberOfInitialGrains);
+    public void startSimulation() {
+        softClearData();
+        loadAppConfiguration();
 
-        int dimensionX = Integer.parseInt(dimensionXField.getText());
-        GlobalData.getInstance().setNumberOfGrainsAtX(dimensionX);
+        this.grainMap = new GrainMap(AppConfiguration.getInstance());
 
-        int dimensionY = Integer.parseInt(dimensionYField.getText());
-        GlobalData.getInstance().setNumberOfGrainsAtY(dimensionY);
+        CanvasPrinter canvasPrinter = CanvasPrinter.getInstance(this.canvas, AppConfiguration.getInstance(), this.grainMap);
+        canvasPrinter.generateView();
 
-        if (periodicRadioButton.isSelected()) {
-            GlobalData.getInstance().setNeighbourType("periodic");
-        } else if(absorbingRadioButton.isSelected()) {
-            GlobalData.getInstance().setNeighbourType("absorbing");
-        }
+/*
+        new Thread(() -> {
+            while (grainMap.hasEmptyCells()) {
+                grainMap.nextStep();
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                Platform.runLater(canvasPrinter::generateView);
+            }
+        }).start();
+*/
 
-        GlobalData.getInstance().setNumberOfInclusions(Integer.parseInt(numberOfInclusionsField.getText()));
-        GlobalData.getInstance().setSizeOfInclusion(Integer.parseInt(sizeOfInclusionsField.getText()));
+        Executors.newFixedThreadPool(1).execute(() ->{
+            while (grainMap.hasEmptyCells()) {
+                grainMap.nextStep();
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                Platform.runLater(canvasPrinter::generateView);
+            }
+        });
 
-        if (circleInclusionRadioButton.isSelected()) {
-            GlobalData.getInstance().setTypeOfInclusion("circle");
-        } else if (squareInclusionRadioButton.isSelected()) {
-            GlobalData.getInstance().setTypeOfInclusion("square");
-        }
-
-        if(startWithInclusionsCheckBox.isSelected()) {
-            GlobalData.getInstance().setStartWithInclusions(true);
-        } else {
-            GlobalData.getInstance().setStartWithInclusions(false);
-        }
-
+/*        Executors.newSingleThreadExecutor().execute(() ->{
+            while (grainMap.hasEmptyCells()) {
+                grainMap.nextStep();
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                Platform.runLater(canvasPrinter::generateView);
+            }
+        });
+        */
 
     }
 
-    public void startSimulation() {
-        softClearData();
-        getGlobalDataFromGUI();
+    public void loadAppConfiguration() {
+        int numberOfInitialGrains = Integer.parseInt(numberOfGrainsField.getText());
+        AppConfiguration.getInstance().setNumberOfInitialGrains(numberOfInitialGrains);
 
-        this.grainMap = new GrainMap(GlobalData.getInstance());
+        int dimensionX = Integer.parseInt(dimensionXField.getText());
+        AppConfiguration.getInstance().setNumberOfGrainsAtX(dimensionX);
 
-        View view = View.getInstance(this.canvas, GlobalData.getInstance(), this.grainMap);
-        view.generateView();
+        int dimensionY = Integer.parseInt(dimensionYField.getText());
+        AppConfiguration.getInstance().setNumberOfGrainsAtY(dimensionY);
 
-        int generationsCounter = 0;
-        while (grainMap.hasEmptyCells()) {
-/*
-
-            Runnable runnable = new Runnable() {
-                @Override
-                public void run() {
-                    Platform.runLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            grainMap.nextStep();
-                            view.generateView();
-                        }
-                    });
-                }
-            };
-
-            Thread thread = new Thread(runnable);
-            thread.start();
-            try {
-                thread.join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-*/
-
-            grainMap.nextStep();
-            view.generateView();
-
-
-            //view.generateView(grainMap.getCurrentStep());
-
-           /* CanvasRedrawThread canvasRedrawThread = new CanvasRedrawThread(view, grainMap.currentStep);
-            Thread thread = new Thread(canvasRedrawThread);
-            thread.setDaemon(true);
-            thread.start();
-*/
-
-            /*try {
-                thread.join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }*/
-
-
-            generationsCounter++;
-            System.out.println(generationsCounter);
-
+        if (periodicRadioButton.isSelected()) {
+            AppConfiguration.getInstance().setNeighbourType("periodic");
+        } else if(absorbingRadioButton.isSelected()) {
+            AppConfiguration.getInstance().setNeighbourType("absorbing");
         }
+
+        AppConfiguration.getInstance().setNumberOfInclusions(Integer.parseInt(numberOfInclusionsField.getText()));
+        AppConfiguration.getInstance().setSizeOfInclusion(Integer.parseInt(sizeOfInclusionsField.getText()));
+
+        if (circleInclusionRadioButton.isSelected()) {
+            AppConfiguration.getInstance().setTypeOfInclusion("circle");
+        } else if (squareInclusionRadioButton.isSelected()) {
+            AppConfiguration.getInstance().setTypeOfInclusion("square");
+        }
+
+        if(startWithInclusionsCheckBox.isSelected()) {
+            AppConfiguration.getInstance().setStartWithInclusions(true);
+        } else {
+            AppConfiguration.getInstance().setStartWithInclusions(false);
+        }
+
 
     }
 
     public void addInclusionsToExistingCellBoard() {
-        getGlobalDataFromGUI();
+        loadAppConfiguration();
 
         if (this.grainMap != null) { //do sth
 
-            Inclusion inclusion = new Inclusion(GlobalData.getInstance(), grainMap.currentStep, grainMap.hasEmptyCells());
+            Inclusion inclusion = new Inclusion(AppConfiguration.getInstance(), grainMap.currentStep, grainMap.hasEmptyCells());
             inclusion.add();
-            View.getInstance(this.canvas, GlobalData.getInstance(), this.grainMap).generateView();
+            CanvasPrinter.getInstance(this.canvas, AppConfiguration.getInstance(), this.grainMap).generateView();
 
         } else { //add inclusions after grain algo
 
@@ -159,9 +174,182 @@ public class MainController implements Initializable {
 
     public void softClearData() {
         GrainMap.IdCounter = 0;
-        GlobalData.getInstance().setNumberOfInclusions(0);
-        View.getInstance(this.canvas, GlobalData.getInstance(), this.grainMap).clear();
+        AppConfiguration.getInstance().setNumberOfInclusions(0);
+        CanvasPrinter.getInstance(this.canvas, AppConfiguration.getInstance(), this.grainMap).clear();
         canvas.getGraphicsContext2D().clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
     }
 
+    public void exportDataFile() {
+        File file = new File("simulations/simulation" + LocalTime.now().toString().replace(":", ".") + ".txt");
+        AppConfiguration appConfiguration = AppConfiguration.getInstance();
+
+        try(PrintWriter printWriter = new PrintWriter(file)) {
+            printWriter.print(appConfiguration.getNumberOfGrainsAtX() + " ");
+            printWriter.print(appConfiguration.getNumberOfGrainsAtY() + " ");
+            printWriter.print(appConfiguration.getNumberOfInitialGrains() + "\n");
+
+            for (int i = 0; i < appConfiguration.getNumberOfGrainsAtX(); i++) {
+                for (int j = 0; j < appConfiguration.getNumberOfGrainsAtY(); j++) {
+                    printWriter.print(grainMap.getCurrentStep()[i][j].getX() + " " + grainMap.getCurrentStep()[i][j].getY() + " " + grainMap.getCurrentStep()[i][j].getId());
+                    printWriter.print("\n");
+                }
+            }
+
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+
+
+
+    }
+
+    public void exportBitmap() {
+        AppConfiguration appConfiguration = AppConfiguration.getInstance();
+        final BufferedImage bmp = new BufferedImage(appConfiguration.getNumberOfGrainsAtX(), appConfiguration.getNumberOfGrainsAtY(), BufferedImage.TYPE_INT_RGB);
+
+        for (int i = 0; i < appConfiguration.getNumberOfGrainsAtX(); i++) {
+            for (int j = 0; j < appConfiguration.getNumberOfGrainsAtY(); j++) {
+
+                int r, g, b;
+                if (grainMap.currentStep[i][j].getId() == -1) { //empty
+                    r = 255;
+                    g = 255;
+                    b = 255;
+                } else if (grainMap.currentStep[i][j].getId() == -2) {  //inclusion
+                    r = 0;
+                    g = 0;
+                    b = 0;
+                } else {
+                     r = CanvasPrinter.getInstance(canvas, appConfiguration, grainMap).getCellsRGB()[grainMap.currentStep[i][j].getId()][0];
+                     g = CanvasPrinter.getInstance(canvas, appConfiguration, grainMap).getCellsRGB()[grainMap.currentStep[i][j].getId()][1];
+                     b = CanvasPrinter.getInstance(canvas, appConfiguration, grainMap).getCellsRGB()[grainMap.currentStep[i][j].getId()][2];
+                }
+                Color color = new Color(r, g, b);
+
+                bmp.setRGB(i, j, color.getRGB());
+            }
+        }
+
+        File file = new File("simulations/simulation" + LocalTime.now().toString().replace(":", ".") + ".bmp");
+        try {
+            ImageIO.write(bmp, "bmp", file);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void importDataFile() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setInitialDirectory(new File("simulations"));
+        fileChooser.setTitle("Open Resource File");
+
+        File file = fileChooser.showOpenDialog((anchorPane.getScene().getWindow()));
+
+        softClearData();
+        try(BufferedReader bufferedReader = new BufferedReader(new FileReader(file))) {
+
+            String firstLine = bufferedReader.readLine();
+            String[] initialValues = firstLine.split(" ");
+            AppConfiguration.getInstance().setNumberOfGrainsAtX(Integer.parseInt(initialValues[0]));
+            AppConfiguration.getInstance().setNumberOfGrainsAtY(Integer.parseInt(initialValues[1]));
+            AppConfiguration.getInstance().setNumberOfInitialGrains(Integer.parseInt(initialValues[2]));
+            grainMap = new GrainMap(AppConfiguration.getInstance());
+
+
+            for (int i = 0; i < AppConfiguration.getInstance().getNumberOfGrainsAtX(); i++) {
+                for (int j = 0; j < AppConfiguration.getInstance().getNumberOfGrainsAtY(); j++) {
+
+                    String line = bufferedReader.readLine();
+                    String[] lineValues = line.split(" ");
+
+                    int x = Integer.parseInt(lineValues[0]);
+                    int y = Integer.parseInt(lineValues[1]);
+                    int id = Integer.parseInt(lineValues[2]);
+                    //System.out.printf("read line: %s %s %s\n", x,y, id);
+
+                    grainMap.currentStep[i][j] = new Cell(x ,y ,id);
+                }
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        CanvasPrinter.getInstance(canvas, AppConfiguration.getInstance(), grainMap).generateView();
+
+    }
+
+    public void importBitmap() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setInitialDirectory(new File("simulations"));
+        fileChooser.setTitle("Open Resource File");
+
+        File file = fileChooser.showOpenDialog((anchorPane.getScene().getWindow()));
+        softClearData();
+
+        try {
+            final BufferedImage bmp = ImageIO.read(file);
+            int sizeX = bmp.getWidth();
+            int sizeY = bmp.getHeight();
+            int numOfInitialGrains = 0;
+            //HashMap<Integer, Integer> grainId_colorHashMap = new HashMap<Integer, Integer>();
+            List<Color> listOfCountedColors = new ArrayList<Color>();
+
+            Color blackColor = new Color(0, 0, 0);
+            Color whiteColor = new Color(255, 255, 255);
+            //new ColorModel().
+            //count initial phases
+            for (int i = 0; i < sizeX; i++) {
+                for (int j = 0; j < sizeY; j++) {
+
+                    Color currentColor = new Color(bmp.getRGB(i, j));
+                    if (!currentColor.equals(blackColor) && !currentColor.equals(whiteColor) && !listOfCountedColors.contains(currentColor)) {
+                        listOfCountedColors.add(currentColor);
+                        numOfInitialGrains++;
+                    }
+                }
+            }
+            AppConfiguration.getInstance().setNumberOfGrainsAtX(sizeX);
+            AppConfiguration.getInstance().setNumberOfGrainsAtY(sizeY);
+            AppConfiguration.getInstance().setNumberOfInitialGrains(numOfInitialGrains);
+
+            grainMap = new GrainMap(AppConfiguration.getInstance());
+
+            //find id based on phases, set id of cells, and generate view
+            for (int i = 0; i < sizeX; i++) {
+                for (int j = 0; j < sizeY; j++) {
+
+                    Color currentColor = new Color(bmp.getRGB(i, j));
+                    if (currentColor.equals(blackColor)) {   //inclusion
+                        grainMap.currentStep[i][j] = new Cell(i, j, -2);
+                    } else if (currentColor.equals(whiteColor)) {    //empty cell
+                        grainMap.currentStep[i][j] = new Cell(i, j, -1);
+                    } else {
+                        grainMap.currentStep[i][j] = new Cell(i, j, listOfCountedColors.indexOf(currentColor));
+                    }
+
+                }
+            }
+
+            int[][] rgbToReturn = new int[listOfCountedColors.size()][1];
+            for (int i = 0; i < listOfCountedColors.size(); i++) {
+                int r = listOfCountedColors.get(i).getRed();
+                int g = listOfCountedColors.get(i).getGreen();
+                int b = listOfCountedColors.get(i).getBlue();
+                rgbToReturn[i] = new int[]{r, g, b};
+            }
+
+            CanvasPrinter canvasPrinter = CanvasPrinter.getInstance(canvas, AppConfiguration.getInstance(), grainMap);
+            canvasPrinter.setCellsRGB(rgbToReturn);
+            canvasPrinter.generateView();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
+
+

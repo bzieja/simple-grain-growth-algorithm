@@ -14,12 +14,9 @@ public class Main extends Application {
         primaryStage.setTitle("Simple Grain Growth");
         primaryStage.setScene(new Scene(root, 900, 650));
         primaryStage.show();
-
-
     }
 
-
-    public static void main(String[] args) {
+  /*  public static void main(String[] args) {
         launch(args);
-    }
+    }*/
 }

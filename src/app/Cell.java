@@ -1,4 +1,4 @@
-package businesslogic;
+package app;
 
 public class Cell {
     int x;
@@ -13,7 +13,19 @@ public class Cell {
         //this.rgb = new int[]{255, 255, 255};
     }
 
+    public Cell(int x, int y, int id) {
+        this.x = x;
+        this.y = y;
+        this.id = id;
+        //this.rgb = new int[]{255, 255, 255};
+    }
 
+
+    public Cell copy(){
+        Cell cell = new Cell(x, y);
+        cell.setId(id);
+        return cell;
+    }
     public boolean isEmptyOrInclusion() {
         if (isEmpty() || isInclusion()) {
             return true;
