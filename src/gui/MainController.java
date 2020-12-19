@@ -1,11 +1,10 @@
 package gui;
 
 import app.AppConfiguration;
-import app.Cell;
-import app.GrainMap;
+import app.grid.Cell;
+import app.grid.GrainMap;
 import app.inclusion.Inclusion;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
@@ -15,24 +14,17 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
-import javafx.stage.Stage;
-import org.w3c.dom.css.RGBColor;
 
 import javax.imageio.ImageIO;
-import javax.swing.text.View;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.awt.image.ColorModel;
 import java.io.*;
 import java.net.URL;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.Executors;
-
-import static com.sun.javafx.iio.ios.IosImageLoader.RGB;
 
 public class MainController implements Initializable {
 
@@ -55,6 +47,7 @@ public class MainController implements Initializable {
     public MenuItem importDataFileButton;
     public MenuItem importBitmapButton;
     public AnchorPane anchorPane;
+    public TextField probabilityOfChangeField;
     GrainMap grainMap;
 
     @FXML
@@ -97,18 +90,6 @@ public class MainController implements Initializable {
             }
         });
 
-/*        Executors.newSingleThreadExecutor().execute(() ->{
-            while (grainMap.hasEmptyCells()) {
-                grainMap.nextStep();
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                Platform.runLater(canvasPrinter::generateView);
-            }
-        });
-        */
 
     }
 
@@ -143,6 +124,8 @@ public class MainController implements Initializable {
             AppConfiguration.getInstance().setStartWithInclusions(false);
         }
 
+        int probability = Integer.parseInt(probabilityOfChangeField.getText());
+        AppConfiguration.getInstance().setProbabilityOfChange(probability);
 
     }
 

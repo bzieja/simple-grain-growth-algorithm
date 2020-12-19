@@ -1,8 +1,8 @@
 package gui;
 
-import app.Cell;
+import app.grid.Cell;
 import app.AppConfiguration;
-import app.GrainMap;
+import app.grid.GrainMap;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;

@@ -1,5 +1,7 @@
-package app;
+package app.grid;
 
+import app.AppConfiguration;
+import app.exploration.Neighborhood;
 import app.inclusion.Inclusion;
 
 import java.util.Random;

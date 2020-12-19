@@ -1,6 +1,6 @@
 package app.inclusion;
 
-import app.Cell;
+import app.grid.Cell;
 
 public interface Shape {
 

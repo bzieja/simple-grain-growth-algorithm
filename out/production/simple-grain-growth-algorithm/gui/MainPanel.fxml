@@ -63,5 +63,7 @@
       <RadioButton fx:id="periodicRadioButton" layoutX="146.0" layoutY="152.0" mnemonicParsing="false" selected="true" text="periodic" toggleGroup="$boundaryConditions" />
       <Button fx:id="clearDataButton" layoutX="39.0" layoutY="611.0" mnemonicParsing="false" onAction="#clearData" text="Clear Data" />
       <CheckBox fx:id="startWithInclusionsCheckBox" layoutX="158.0" layoutY="586.0" mnemonicParsing="false" text="Start with inclusions" />
+      <TextField fx:id="probabilityOfChangeField" layoutX="180.0" layoutY="340.0" prefHeight="25.0" prefWidth="45.0" text="10" />
+      <Label layoutX="15.0" layoutY="332.0" prefHeight="41.0" prefWidth="161.0" text="Probability of change [%]" />
     </children>
 </AnchorPane>

@@ -11,6 +11,7 @@ public class AppConfiguration {
     private String typeOfInclusion;
     private int sizeOfInclusion;
     boolean isStartWithInclusions;
+    private int probabilityOfChange;
 
     private AppConfiguration() {}
 
@@ -85,5 +86,13 @@ public class AppConfiguration {
 
     public void setStartWithInclusions(boolean startWithInclusions) {
         isStartWithInclusions = startWithInclusions;
+    }
+
+    public int getProbabilityOfChange() {
+        return probabilityOfChange;
+    }
+
+    public void setProbabilityOfChange(int probabilityOfChange) {
+        this.probabilityOfChange = probabilityOfChange;
     }
 }

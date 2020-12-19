@@ -1,4 +1,4 @@
-package app;
+package app.grid;
 
 public class Cell {
     int x;
