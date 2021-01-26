@@ -66,10 +66,9 @@
       <TextField fx:id="probabilityOfChangeField" layoutX="172.0" layoutY="328.0" prefHeight="25.0" prefWidth="45.0" text="90" />
       <Label layoutX="15.0" layoutY="326.0" prefHeight="28.0" prefWidth="161.0" text="Probability of change [%]" />
       <Label layoutX="97.0" layoutY="425.0" prefHeight="17.0" prefWidth="84.0" text="Sub-structure" />
-      <Button fx:id="startSelectingImmutablePhasesButton" layoutX="16.0" layoutY="450.0" mnemonicParsing="false" onAction="#startSelectingImmutablePhases" prefHeight="25.0" prefWidth="247.0" text="Start selecting immutable phases" />
-      <Button fx:id="endSelectingImmutablePhasesButton1" layoutX="18.0" layoutY="482.0" mnemonicParsing="false" onAction="#endSelectingImmutablePhases" prefHeight="25.0" prefWidth="247.0" text="End selecting immutable phases" />
-      <Label layoutX="18.0" layoutY="515.0" prefHeight="17.0" prefWidth="200.0" text="Number of grains in sub-structures:" />
-      <TextField fx:id="numberOfGrainsInSubStructuresField" layoutX="218.0" layoutY="511.0" prefHeight="25.0" prefWidth="45.0" text="2" />
-      <Button fx:id="addSubStructuresButton" layoutX="16.0" layoutY="542.0" mnemonicParsing="false" onAction="#addSubStructures" prefHeight="25.0" prefWidth="247.0" text="Add sub-structures" />
+      <Button fx:id="startSelectingImmutablePhasesButton" layoutX="16.0" layoutY="450.0" mnemonicParsing="false" onAction="#startSelectingImmutablePhases" prefHeight="25.0" prefWidth="247.0" text="Select immutable phases" />
+      <Label layoutX="18.0" layoutY="487.0" prefHeight="17.0" prefWidth="200.0" text="Number of grains in sub-structures:" />
+      <TextField fx:id="numberOfGrainsInSubStructuresField" layoutX="218.0" layoutY="483.0" prefHeight="25.0" prefWidth="45.0" text="3" />
+      <Button fx:id="addSubStructuresButton" layoutX="16.0" layoutY="514.0" mnemonicParsing="false" onAction="#addSubStructures" prefHeight="25.0" prefWidth="247.0" text="Add sub-structures" />
     </children>
 </AnchorPane>

@@ -359,10 +359,9 @@ public class MainController implements Initializable {
             public void handle(MouseEvent mouseEvent) {
                 double x = mouseEvent.getX();
                 double y = mouseEvent.getY();
-                CanvasPrinter canvasPrinter = CanvasPrinter.getInstance(canvas, AppConfiguration.getInstance(), grainMap);
+                CanvasPrinter canvasPrinter = CanvasPrinter.getInstance();
 
                 if (!SubPhase.hasInstance()) {
-                    //System.out.println(canvasPrinter.getCellIdByCoordinates(x, y));
                     int phaseToChange = canvasPrinter.getCellIdByCoordinates(x, y);
 
                     //changed all id of clicked phase to unmutable phase
@@ -372,6 +371,7 @@ public class MainController implements Initializable {
                     Cell cell = canvasPrinter.getCellByCoordinates(x, y);
 
                     SubPhase subPhase = SubPhase.getInstance();
+                    subPhase.divideIntoRegions();
                     subPhase.changeRegionToImmutable(subPhase.getSubPhaseRegionByCell(cell));
 
                 }
@@ -380,22 +380,17 @@ public class MainController implements Initializable {
         });
     }
 
-    public void endSelectingImmutablePhases() {
-        //canvas.removeEventHandler(MouseEvent.MOUSE_CLICKED);
-        canvas.setOnMouseClicked(null);
-    }
-
     public void addSubStructures() {
 
         loadAppConfiguration();
         SubPhase subPhase = SubPhase.getInstance();
         subPhase.divideIntoRegions();
+        subPhase.generateNewGrains();
 
         CanvasPrinter.getInstance().generateView();
 
         Executors.newFixedThreadPool(4).execute(() ->{
             while (subPhase.isSubStructureIncomplete()) {
-                //System.out.println("nowy krok!");
                 subPhase.nextSubPhaseStep();
                 try {
                     Thread.sleep(100);

@@ -7,6 +7,8 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 public class CanvasPrinter {
@@ -18,8 +20,8 @@ public class CanvasPrinter {
     double cellXDimension;
     double cellYDimension;
     int numberOfInitialGrains;
-    int[][] cellsRGB;   //[cellId][r, g, b]
-
+    int[][] cellsRGB;
+    Map<Integer, Integer[]> mapRGB; //IDcell, color
     Random random;
 
     private CanvasPrinter(Canvas canvas, AppConfiguration appConfiguration, GrainMap grainMap) {
@@ -28,6 +30,9 @@ public class CanvasPrinter {
         this.numberOfGrainsAtY = appConfiguration.getNumberOfGrainsAtY();
         this.numberOfInitialGrains = appConfiguration.getNumberOfInitialGrains();
         this.grainMap = grainMap;
+        this.random = new Random(this.numberOfInitialGrains);
+
+        this.mapRGB = new HashMap<>();
 
         cellXDimension = canvas.getHeight() / numberOfGrainsAtX;
         cellYDimension = canvas.getWidth() / numberOfGrainsAtY;
@@ -80,7 +85,6 @@ public class CanvasPrinter {
     private void setRGBForEachCellId() {
         cellsRGB = new int[this.numberOfInitialGrains][];
         //Random random = new Random(this.numberOfInitialGrains);
-        this.random = new Random(this.numberOfInitialGrains);
         for (int i = 0; i < numberOfInitialGrains; i++) {
             cellsRGB[i] = new int[]{1 + random.nextInt(254), 1 + random.nextInt(254), 1 + random.nextInt(254)};
         }
@@ -126,24 +130,20 @@ public class CanvasPrinter {
         CanvasPrinter.instance = null;
     }
 
-    public void increaseNumberOfInitialGrains(int biggerOfInitialGrains) {
+    public void increaseNumberOfInitialGrains(int howMuchToIncrease) {
 
-        //Random random = new Random(this.numberOfInitialGrains);
-        if (biggerOfInitialGrains > this.numberOfInitialGrains) {
-            //generate colors for additional colors
-            int[][] biggerCellsRGB = new int[biggerOfInitialGrains][];
+        int[][] biggerCellsRGB = new int[this.cellsRGB.length + howMuchToIncrease][3];
 
-            for (int i = 0; i < this.numberOfInitialGrains; i++) {
-                biggerCellsRGB[i] = cellsRGB[i];
+        for (int i = 0; i < this.cellsRGB.length; i++) {
+            for (int j = 0; j < this.cellsRGB[0].length; j++) {
+                biggerCellsRGB[i][j] = cellsRGB[i][j];
             }
-
-            for (int i = this.numberOfInitialGrains; i < biggerOfInitialGrains; i++) {
-                biggerCellsRGB[i] = new int[]{1 + random.nextInt(254), 1 + random.nextInt(254), 1 + random.nextInt(254)};
-            }
-
-            this.cellsRGB = biggerCellsRGB;
         }
-        //this.numberOfInitialGrains = biggerOfInitialGrains;
-        //setRGBForEachCellId();
+
+        for (int i = this.cellsRGB.length; i < this.cellsRGB.length + howMuchToIncrease; i++) {
+            biggerCellsRGB[i] = new int[]{1 + random.nextInt(254), 1 + random.nextInt(254), 1 + random.nextInt(254)};
+        }
+
+        this.cellsRGB = biggerCellsRGB;
     }
 }

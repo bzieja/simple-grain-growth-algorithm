@@ -44,18 +44,15 @@ public class SubPhase {
                 newSubRegions.addAll(k);
             }
             subPhaseRegions = newSubRegions;
-
         }
 
-        //init starting positions for grains in regions
-        //int numberOfInitialGrainsInSubPhases = AppConfiguration.getInstance().getNumberOfGrainsInSubPhases();
-        //deleteEmptyRegions();
-        //updateView - INCREASE RGB TABLE
-        CanvasPrinter.getInstance().increaseNumberOfInitialGrains(numberOfGrainsAtTheEnd);
+        CanvasPrinter.getInstance().increaseNumberOfInitialGrains(AppConfiguration.getInstance().getNumberOfGrainsInSubPhases());
+        //CanvasPrinter.getInstance().increaseNumberOfInitialGrains(numberOfGrainsAtTheEnd);
+    }
+
+    public synchronized void generateNewGrains() {
 
         for (SubPhaseRegion subPhaseRegion : subPhaseRegions) {    //for each subregion
-
-            //subPhaseRegion.divideOnSubregions();
 
             Random random = new Random();
             for (int i = numberOfGrainsAtTheStart; i < numberOfGrainsAtTheEnd; i++) { //numeracja "nowych" ziaren
@@ -68,16 +65,10 @@ public class SubPhase {
                     }
                     cell  = subPhaseRegion.getRegionCells().get(random.nextInt(subPhaseRegion.getRegionCells().size()));
                 }
-
                 cell.setId(i);
                 cell.setChangedSecondTime(true);
             }
-
-
         }
-
-
-        //this.numberOfGrainsAtTheStart = this.numberOfGrainsAtTheStart + numberOfInitialGrainsInSubPhases;
     }
 
     public synchronized void nextSubPhaseStep() {
@@ -88,13 +79,6 @@ public class SubPhase {
 
     public boolean isSubStructureIncomplete() {
         return Stream.of(grainMap.currentStep).flatMap(Stream::of).anyMatch(x -> !x.isInclusion() && !x.isImmutablePhase() && !x.isChangedSecondTime());
-//        for (SubPhaseRegion subPhaseRegion : subPhaseRegions) {
-//            if (subPhaseRegion.getRegionCells().stream().anyMatch(x -> !x.isInclusion() && !x.isImmutablePhase() && !x.isChangedSecondTime())) {
-//                return true;
-//            }
-//        }
-//        return false;
-
     }
 
     public static SubPhase getInstance() {
@@ -120,7 +104,6 @@ public class SubPhase {
 //            }
 
             if (subPhaseRegion.getRegionCells().stream().anyMatch(x -> (x.getX() == cell1.getX() && x.getY() == cell1.getY()))) {
-                System.out.print("znaleziono!");
                 subPhaseRegion1 = subPhaseRegion;
             }
         }
