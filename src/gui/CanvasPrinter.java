@@ -20,6 +20,8 @@ public class CanvasPrinter {
     int numberOfInitialGrains;
     int[][] cellsRGB;   //[cellId][r, g, b]
 
+    Random random;
+
     private CanvasPrinter(Canvas canvas, AppConfiguration appConfiguration, GrainMap grainMap) {
         this.canvas = canvas;
         this.numberOfGrainsAtX = appConfiguration.getNumberOfGrainsAtX();
@@ -43,6 +45,10 @@ public class CanvasPrinter {
         }
     }
 
+    public static CanvasPrinter getInstance(){
+        return CanvasPrinter.instance;
+    }
+
     public void generateView() {
         Cell[][] board = this.grainMap.getCurrentStep();
 
@@ -56,6 +62,8 @@ public class CanvasPrinter {
                     graphicsContext.setFill(Color.rgb(255, 255, 255));
                 } else if (board[i][j].isInclusion()) {
                     graphicsContext.setFill(Color.rgb(0, 0, 0));
+                } else if (board[i][j].isImmutablePhase()) {
+                    graphicsContext.setFill(Color.rgb(255, 0, 255));
                 } else {
                     int r = cellsRGB[board[i][j].getId()][0];
                     int g = cellsRGB[board[i][j].getId()][1];
@@ -67,15 +75,43 @@ public class CanvasPrinter {
                 graphicsContext.fill();
             }
         }
-
     }
 
     private void setRGBForEachCellId() {
         cellsRGB = new int[this.numberOfInitialGrains][];
-        Random random = new Random(this.numberOfInitialGrains);
+        //Random random = new Random(this.numberOfInitialGrains);
+        this.random = new Random(this.numberOfInitialGrains);
         for (int i = 0; i < numberOfInitialGrains; i++) {
             cellsRGB[i] = new int[]{1 + random.nextInt(254), 1 + random.nextInt(254), 1 + random.nextInt(254)};
         }
+    }
+
+    public int getCellIdByCoordinates(double x, double y) {
+
+        for (int i = 0; i < this.numberOfGrainsAtX; i++) {
+            for (int j = 0; j < this.numberOfGrainsAtY; j++) {
+                if (x >= i * cellXDimension && x < (i + 1) * cellXDimension &&
+                    y >= j * cellYDimension && y < (j + 1) * cellYDimension) {
+
+                    return grainMap.currentStep[j][i].getId();
+                }
+            }
+        }
+
+        return 0;
+    }
+
+    public Cell getCellByCoordinates(double x, double y) {
+        for (int i = 0; i < this.numberOfGrainsAtX; i++) {
+            for (int j = 0; j < this.numberOfGrainsAtY; j++) {
+                if (x >= i * cellXDimension && x < (i + 1) * cellXDimension &&
+                        y >= j * cellYDimension && y < (j + 1) * cellYDimension) {
+
+                    return grainMap.currentStep[j][i];
+                }
+            }
+        }
+        return null;
     }
 
     public int[][] getCellsRGB() {
@@ -88,5 +124,26 @@ public class CanvasPrinter {
 
     public void clear() {
         CanvasPrinter.instance = null;
+    }
+
+    public void increaseNumberOfInitialGrains(int biggerOfInitialGrains) {
+
+        //Random random = new Random(this.numberOfInitialGrains);
+        if (biggerOfInitialGrains > this.numberOfInitialGrains) {
+            //generate colors for additional colors
+            int[][] biggerCellsRGB = new int[biggerOfInitialGrains][];
+
+            for (int i = 0; i < this.numberOfInitialGrains; i++) {
+                biggerCellsRGB[i] = cellsRGB[i];
+            }
+
+            for (int i = this.numberOfInitialGrains; i < biggerOfInitialGrains; i++) {
+                biggerCellsRGB[i] = new int[]{1 + random.nextInt(254), 1 + random.nextInt(254), 1 + random.nextInt(254)};
+            }
+
+            this.cellsRGB = biggerCellsRGB;
+        }
+        //this.numberOfInitialGrains = biggerOfInitialGrains;
+        //setRGBForEachCellId();
     }
 }

@@ -4,7 +4,10 @@ import app.AppConfiguration;
 import app.grid.Cell;
 import app.grid.GrainMap;
 import app.inclusion.Inclusion;
+import app.subphase.SubPhase;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
@@ -12,6 +15,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 
@@ -22,9 +26,11 @@ import java.io.*;
 import java.net.URL;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.Executors;
+import java.util.stream.Stream;
 
 public class MainController implements Initializable {
 
@@ -48,6 +54,9 @@ public class MainController implements Initializable {
     public MenuItem importBitmapButton;
     public AnchorPane anchorPane;
     public TextField probabilityOfChangeField;
+    public Button startSelectingImmutablePhasesButton;
+    public TextField numberOfGrainsInSubStructuresField;
+    public Button addSubStructuresButton;
     GrainMap grainMap;
 
     @FXML
@@ -89,10 +98,9 @@ public class MainController implements Initializable {
                 Platform.runLater(canvasPrinter::generateView);
             }
         });
-
-
     }
 
+    //move loadLogicToAppConf
     public void loadAppConfiguration() {
         int numberOfInitialGrains = Integer.parseInt(numberOfGrainsField.getText());
         AppConfiguration.getInstance().setNumberOfInitialGrains(numberOfInitialGrains);
@@ -127,6 +135,8 @@ public class MainController implements Initializable {
         int probability = Integer.parseInt(probabilityOfChangeField.getText());
         AppConfiguration.getInstance().setProbabilityOfChange(probability);
 
+        int numberOfGrainsInSubPhases = Integer.parseInt(numberOfGrainsInSubStructuresField.getText());
+        AppConfiguration.getInstance().setNumberOfGrainsInSubPhases(numberOfGrainsInSubPhases);
     }
 
     public void addInclusionsToExistingCellBoard() {
@@ -160,6 +170,7 @@ public class MainController implements Initializable {
         AppConfiguration.getInstance().setNumberOfInclusions(0);
         CanvasPrinter.getInstance(this.canvas, AppConfiguration.getInstance(), this.grainMap).clear();
         canvas.getGraphicsContext2D().clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+        SubPhase.clear();
     }
 
     public void exportDataFile() {
@@ -204,6 +215,10 @@ public class MainController implements Initializable {
                     r = 0;
                     g = 0;
                     b = 0;
+                } else if (grainMap.currentStep[i][j].getId() == -3) {
+                    r = 255;
+                    g = 0;
+                    b = 255;
                 } else {
                      r = CanvasPrinter.getInstance(canvas, appConfiguration, grainMap).getCellsRGB()[grainMap.currentStep[i][j].getId()][0];
                      g = CanvasPrinter.getInstance(canvas, appConfiguration, grainMap).getCellsRGB()[grainMap.currentStep[i][j].getId()][1];
@@ -283,13 +298,14 @@ public class MainController implements Initializable {
 
             Color blackColor = new Color(0, 0, 0);
             Color whiteColor = new Color(255, 255, 255);
+            Color magentaColor = new Color(255, 0, 255);
             //new ColorModel().
             //count initial phases
             for (int i = 0; i < sizeX; i++) {
                 for (int j = 0; j < sizeY; j++) {
 
                     Color currentColor = new Color(bmp.getRGB(i, j));
-                    if (!currentColor.equals(blackColor) && !currentColor.equals(whiteColor) && !listOfCountedColors.contains(currentColor)) {
+                    if (!currentColor.equals(blackColor) && !currentColor.equals(whiteColor) && !listOfCountedColors.contains(currentColor) & !currentColor.equals(magentaColor)) {
                         listOfCountedColors.add(currentColor);
                         numOfInitialGrains++;
                     }
@@ -310,7 +326,10 @@ public class MainController implements Initializable {
                         grainMap.currentStep[i][j] = new Cell(i, j, -2);
                     } else if (currentColor.equals(whiteColor)) {    //empty cell
                         grainMap.currentStep[i][j] = new Cell(i, j, -1);
-                    } else {
+                    } else if (currentColor.equals(magentaColor)) {
+                        grainMap.currentStep[i][j] = new Cell(i, j, -3);
+                    }
+                    else {
                         grainMap.currentStep[i][j] = new Cell(i, j, listOfCountedColors.indexOf(currentColor));
                     }
 
@@ -332,6 +351,61 @@ public class MainController implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void startSelectingImmutablePhases() {
+        canvas.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                double x = mouseEvent.getX();
+                double y = mouseEvent.getY();
+                CanvasPrinter canvasPrinter = CanvasPrinter.getInstance(canvas, AppConfiguration.getInstance(), grainMap);
+
+                if (!SubPhase.hasInstance()) {
+                    //System.out.println(canvasPrinter.getCellIdByCoordinates(x, y));
+                    int phaseToChange = canvasPrinter.getCellIdByCoordinates(x, y);
+
+                    //changed all id of clicked phase to unmutable phase
+                    grainMap.changePhaseToImmutable(phaseToChange);
+
+                } else {
+                    Cell cell = canvasPrinter.getCellByCoordinates(x, y);
+
+                    SubPhase subPhase = SubPhase.getInstance();
+                    subPhase.changeRegionToImmutable(subPhase.getSubPhaseRegionByCell(cell));
+
+                }
+                canvasPrinter.generateView();
+            }
+        });
+    }
+
+    public void endSelectingImmutablePhases() {
+        //canvas.removeEventHandler(MouseEvent.MOUSE_CLICKED);
+        canvas.setOnMouseClicked(null);
+    }
+
+    public void addSubStructures() {
+
+        loadAppConfiguration();
+        SubPhase subPhase = SubPhase.getInstance();
+        subPhase.divideIntoRegions();
+
+        CanvasPrinter.getInstance().generateView();
+
+        Executors.newFixedThreadPool(4).execute(() ->{
+            while (subPhase.isSubStructureIncomplete()) {
+                //System.out.println("nowy krok!");
+                subPhase.nextSubPhaseStep();
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                Platform.runLater(CanvasPrinter.getInstance()::generateView);
+            }
+        });
+
     }
 }
 

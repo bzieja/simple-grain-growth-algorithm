@@ -5,22 +5,27 @@ import app.exploration.Neighborhood;
 import app.inclusion.Inclusion;
 
 import java.util.Random;
+import java.util.stream.Stream;
 
 public class GrainMap {
     public static int IdCounter = 0;
     //int emptyCellsCounter;
 
+    private static GrainMap instance;
     public int numberOfInitialGrains;
     public int numberOfCellsAtX;
     public int numberOfCellsAtY;
     public String neighbourType;
     public Cell[][] currentStep;
 
+
     public GrainMap(AppConfiguration appConfiguration) {
+        instance = this;
         this.numberOfInitialGrains = appConfiguration.getNumberOfInitialGrains();
         this.numberOfCellsAtX = appConfiguration.getNumberOfGrainsAtX();
         this.numberOfCellsAtY = appConfiguration.getNumberOfGrainsAtY();
         this.neighbourType = appConfiguration.getNeighbourType();
+
 
         this.currentStep = new Cell[numberOfCellsAtX][numberOfCellsAtY];
 
@@ -76,25 +81,19 @@ public class GrainMap {
     }
 
     public synchronized boolean hasEmptyCells() {
-       /*
-        if (this.emptyCellsCounter > 0) {
-            return true;
-        } else {
-            return false;
-        }*/
-
-        for (int i = 0; i < numberOfCellsAtX; i++) {
-            for (int j = 0; j < numberOfCellsAtY; j++) {
-                if (this.currentStep[i][j].isEmpty()) {
-                    return true;
-                }
-            }
-        }
-        return false;
+        return Stream.of(currentStep).flatMap(Stream::of).anyMatch(Cell::isEmpty);
     }
 
     public synchronized Cell[][] getCurrentStep() {
         return this.currentStep;
+    }
+
+    public synchronized boolean containsPhase(int phaseId) {
+        return Stream.of(currentStep).flatMap(Stream::of).anyMatch(x -> x.getId() == phaseId);
+    }
+
+    public synchronized void changePhaseToImmutable(int id) {
+        Stream.of(currentStep).flatMap(Stream::of).forEach(x -> x.setId(x.getId() == id ? -3 : x.getId()));
     }
 
     public void printCurrentStepForDebug() {
@@ -105,5 +104,12 @@ public class GrainMap {
             System.out.print("\n");
         }
 
+    }
+
+    public static GrainMap getInstance() {
+        if (instance == null) {
+            instance = new GrainMap(AppConfiguration.getInstance());
+        }
+        return instance;
     }
 }

@@ -48,7 +48,7 @@
          </toggleGroup>
       </RadioButton>
       <RadioButton fx:id="circleInclusionRadioButton" layoutX="140.0" layoutY="290.0" mnemonicParsing="false" selected="true" text="circle inclusion" toggleGroup="$typeOfInclusion" />
-      <Button fx:id="startSimulationButton" layoutX="154.0" layoutY="611.0" mnemonicParsing="false" onAction="#startSimulation" prefHeight="25.0" prefWidth="127.0" text="Start simulation" />
+      <Button fx:id="startSimulationButton" layoutX="127.0" layoutY="389.0" mnemonicParsing="false" onAction="#startSimulation" prefHeight="25.0" prefWidth="134.0" text="Start simulation" />
       <Button fx:id="addInclusionsButton" layoutX="15.0" layoutY="295.0" mnemonicParsing="false" onAction="#addInclusionsToExistingCellBoard" prefHeight="25.0" prefWidth="98.0" text="Add inclusions" />
       <Label layoutX="15.0" layoutY="36.0" prefHeight="17.0" prefWidth="98.0" text="Dimension of X:" />
       <Label layoutX="14.0" layoutY="65.0" prefHeight="17.0" prefWidth="91.0" text="Dimension of Y:" />
@@ -61,9 +61,14 @@
          </toggleGroup>
       </RadioButton>
       <RadioButton fx:id="periodicRadioButton" layoutX="146.0" layoutY="152.0" mnemonicParsing="false" selected="true" text="periodic" toggleGroup="$boundaryConditions" />
-      <Button fx:id="clearDataButton" layoutX="39.0" layoutY="611.0" mnemonicParsing="false" onAction="#clearData" text="Clear Data" />
-      <CheckBox fx:id="startWithInclusionsCheckBox" layoutX="158.0" layoutY="586.0" mnemonicParsing="false" text="Start with inclusions" />
-      <TextField fx:id="probabilityOfChangeField" layoutX="180.0" layoutY="340.0" prefHeight="25.0" prefWidth="45.0" text="10" />
-      <Label layoutX="15.0" layoutY="332.0" prefHeight="41.0" prefWidth="161.0" text="Probability of change [%]" />
+      <Button fx:id="clearDataButton" layoutX="14.0" layoutY="358.0" mnemonicParsing="false" onAction="#clearData" text="Clear Data" />
+      <CheckBox fx:id="startWithInclusionsCheckBox" layoutX="131.0" layoutY="362.0" mnemonicParsing="false" text="Start with inclusions" />
+      <TextField fx:id="probabilityOfChangeField" layoutX="172.0" layoutY="328.0" prefHeight="25.0" prefWidth="45.0" text="90" />
+      <Label layoutX="15.0" layoutY="326.0" prefHeight="28.0" prefWidth="161.0" text="Probability of change [%]" />
+      <Label layoutX="97.0" layoutY="425.0" prefHeight="17.0" prefWidth="84.0" text="Sub-structure" />
+      <Button fx:id="startSelectingImmutablePhasesButton" layoutX="16.0" layoutY="450.0" mnemonicParsing="false" onAction="#startSelectingImmutablePhases" prefHeight="25.0" prefWidth="247.0" text="Select immutable phases" />
+      <Label layoutX="18.0" layoutY="487.0" prefHeight="17.0" prefWidth="200.0" text="Number of grains in sub-structures:" />
+      <TextField fx:id="numberOfGrainsInSubStructuresField" layoutX="218.0" layoutY="483.0" prefHeight="25.0" prefWidth="45.0" text="3" />
+      <Button fx:id="addSubStructuresButton" layoutX="16.0" layoutY="514.0" mnemonicParsing="false" onAction="#addSubStructures" prefHeight="25.0" prefWidth="247.0" text="Add sub-structures" />
     </children>
 </AnchorPane>

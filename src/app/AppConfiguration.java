@@ -2,6 +2,7 @@ package app;
 
 public class AppConfiguration {
     static AppConfiguration instance;
+    private final static int magicNumberForDifferentColors = 0;
 
     private int numberOfInitialGrains;
     private int numberOfGrainsAtX;
@@ -12,8 +13,10 @@ public class AppConfiguration {
     private int sizeOfInclusion;
     boolean isStartWithInclusions;
     private int probabilityOfChange;
+    private int numberOfGrainsInSubPhases;
 
     private AppConfiguration() {}
+
 
     public static AppConfiguration getInstance() {
         if (AppConfiguration.instance == null) {
@@ -95,4 +98,17 @@ public class AppConfiguration {
     public void setProbabilityOfChange(int probabilityOfChange) {
         this.probabilityOfChange = probabilityOfChange;
     }
+
+    public int getNumberOfGrainsInSubPhases() {
+        return numberOfGrainsInSubPhases;
+    }
+
+    public void setNumberOfGrainsInSubPhases(int numberOfGrainsInSubPhases) {
+        this.numberOfGrainsInSubPhases = numberOfGrainsInSubPhases;
+    }
+
+    public static int getMagicNumberForDifferentColors() {
+        return magicNumberForDifferentColors;
+    }
+
 }

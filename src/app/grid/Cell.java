@@ -5,11 +5,15 @@ public class Cell {
     int y;
     int id; //-1 is empty cell
             //-2 is inclusion
+            //-3 immutable phase
+    boolean changedSecondTime;   //for sub-phase grain
+
 
     public Cell(int x, int y) {
         this.x = x;
         this.y = y;
         this.id = -1;
+        this.changedSecondTime = false;
         //this.rgb = new int[]{255, 255, 255};
     }
 
@@ -48,6 +52,26 @@ public class Cell {
         } else {
             return false;
         }
+    }
+
+    public boolean isImmutablePhase() {
+        return id == -3;
+    }
+
+    public boolean isImmutableOrEmptyOrInclusion(){
+        if (isEmpty() || isInclusion() || isImmutablePhase()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean isChangedSecondTime() {
+        return changedSecondTime;
+    }
+
+    public void setChangedSecondTime(boolean changedSecondTime) {
+        this.changedSecondTime = changedSecondTime;
     }
 
     public int getX() {
