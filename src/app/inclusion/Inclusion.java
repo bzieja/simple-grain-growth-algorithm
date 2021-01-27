@@ -89,34 +89,19 @@ public class Inclusion {
                 if(board[i][j].getId() != board[i - 1][j].getId() && !board[i][j].isInclusion() && !board[i - 1][j].isInclusion()) {
                     boundaryCells.add(new int[]{i, j});
                 }
-                //up-right
-                //else if(board[i][j].getId() != board[i - 1][j + 1].getId() && !board[i][j].isInclusion() && !board[i - 1][j + 1].isInclusion()) {
-                //    boundaryCells.add(new int[]{i, j});
-                //}
-                //right
+
                 else if(board[i][j].getId() != board[i][j + 1].getId() && !board[i][j].isInclusion() && !board[i][j + 1].isInclusion()) {
                     boundaryCells.add(new int[]{i, j});
                 }
-                //right down
-                //else if(board[i][j].getId() != board[i + 1][j + 1].getId() && !board[i][j].isInclusion() && !board[i + 1][j + 1].isInclusion()) {
-                //    boundaryCells.add(new int[]{i, j});
-                //}
-                //down
+
                 else if(board[i][j].getId() != board[i + 1][j].getId() && !board[i][j].isInclusion() && !board[i + 1][j].isInclusion()) {
                     boundaryCells.add(new int[]{i, j});
                 }
-                //left down
-                //else if(board[i][j].getId() != board[i + 1][j - 1].getId() && !board[i][j].isInclusion() && !board[i + 1][j - 1].isInclusion()) {
-                //    boundaryCells.add(new int[]{i, j});
-                //}
-                //left
+
                 else if(board[i][j].getId() != board[i][j - 1].getId() && !board[i][j].isInclusion() && !board[i][j - 1].isInclusion()) {
                     boundaryCells.add(new int[]{i, j});
                 }
-                //up-left
-                //else if(board[i][j].getId() != board[i - 1][j - 1].getId() && !board[i][j].isInclusion() && !board[i - 1][j - 1].isInclusion()) {
-                //    boundaryCells.add(new int[]{i, j});
-                //}
+
 
             }
         }

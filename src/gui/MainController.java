@@ -1,6 +1,7 @@
 package gui;
 
 import app.AppConfiguration;
+import app.boundaries.Boundaries;
 import app.grid.Cell;
 import app.grid.GrainMap;
 import app.inclusion.Inclusion;
@@ -57,6 +58,10 @@ public class MainController implements Initializable {
     public Button startSelectingImmutablePhasesButton;
     public TextField numberOfGrainsInSubStructuresField;
     public Button addSubStructuresButton;
+    public Slider thicknessSlider;
+    public Button showHideAllBoundariesButton;
+    public Button showBoundariesOfParticularGrainButton;
+    public Button clearSpaceButton;
     GrainMap grainMap;
 
     @FXML
@@ -171,6 +176,7 @@ public class MainController implements Initializable {
         CanvasPrinter.getInstance(this.canvas, AppConfiguration.getInstance(), this.grainMap).clear();
         canvas.getGraphicsContext2D().clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         SubPhase.clear();
+        Boundaries.clear();
     }
 
     public void exportDataFile() {
@@ -401,6 +407,19 @@ public class MainController implements Initializable {
             }
         });
 
+    }
+
+    public void showHideAllBoundaries() {
+        Boundaries.getInstance().drawBoundaries(2);
+        CanvasPrinter.getInstance().generateView();
+    }
+
+    public void showBoundariesOfParticularGrain() {
+    }
+
+    public void clearSpace() {
+        Boundaries.getInstance().clearAllGrains();
+        CanvasPrinter.getInstance().generateView();
     }
 }
 

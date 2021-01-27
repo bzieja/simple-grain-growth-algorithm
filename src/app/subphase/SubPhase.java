@@ -128,4 +128,8 @@ public class SubPhase {
         List <SubPhaseRegion> emptyRegions = subPhaseRegions.stream().filter(x -> x.getRegionCells().size() == 0).collect(Collectors.toList());
         subPhaseRegions.removeAll(emptyRegions);
     }
+
+    public List<SubPhaseRegion> getSubPhaseRegions() {
+        return subPhaseRegions;
+    }
 }

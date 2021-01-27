@@ -151,6 +151,14 @@ public class SubPhaseRegion {
 
     }
 
+    public boolean containsCell(Cell cell) {
+        if(this.cells.contains(cell)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public List<Cell> getRegionCells() {
         return cells;
     }
