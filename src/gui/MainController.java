@@ -62,6 +62,8 @@ public class MainController implements Initializable {
     public Button showHideAllBoundariesButton;
     public Button showBoundariesOfParticularGrainButton;
     public Button clearSpaceButton;
+    public RadioButton curvatureTypeOfGrowth;
+    public RadioButton simpleTypeOfGrowth;
     GrainMap grainMap;
     EventHandler<MouseEvent> selectImmutablePhasesEventHandler;
     EventHandler<MouseEvent> selectParticularGrainEventHandler;
@@ -107,14 +109,12 @@ public class MainController implements Initializable {
 
                 SubPhase subPhase = SubPhase.getInstance();
                 subPhase.divideIntoRegions();
-                Boundaries.clear();
+                //Boundaries.clear();
                 Boundaries.getInstance().drawBoundaries(Math.round((int) thicknessSlider.getValue()), subPhase.getSubPhaseRegionByCell(cell));
 
                 canvasPrinter.generateView();
             }
         };
-
-
 
     }
 
@@ -191,6 +191,14 @@ public class MainController implements Initializable {
 
         int numberOfGrainsInSubPhases = Integer.parseInt(numberOfGrainsInSubStructuresField.getText());
         AppConfiguration.getInstance().setNumberOfGrainsInSubPhases(numberOfGrainsInSubPhases);
+
+        if (curvatureTypeOfGrowth.isSelected()) {
+            AppConfiguration.getInstance().setTypeOfGrowth("curvatureTypeOfGrowth");
+        } else if (simpleTypeOfGrowth.isSelected()) {
+            AppConfiguration.getInstance().setTypeOfGrowth("simpleTypeOfGrowth");
+        }
+
+
     }
 
     public void addInclusionsToExistingCellBoard() {

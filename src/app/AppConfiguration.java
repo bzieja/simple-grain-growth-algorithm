@@ -14,6 +14,7 @@ public class AppConfiguration {
     boolean isStartWithInclusions;
     private int probabilityOfChange;
     private int numberOfGrainsInSubPhases;
+    private String typeOfGrowth;
 
     private AppConfiguration() {}
 
@@ -107,8 +108,11 @@ public class AppConfiguration {
         this.numberOfGrainsInSubPhases = numberOfGrainsInSubPhases;
     }
 
-    public static int getMagicNumberForDifferentColors() {
-        return magicNumberForDifferentColors;
+    public String getTypeOfGrowth() {
+        return typeOfGrowth;
     }
 
+    public void setTypeOfGrowth(String typeOfGrowth) {
+        this.typeOfGrowth = typeOfGrowth;
+    }
 }

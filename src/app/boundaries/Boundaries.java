@@ -33,7 +33,7 @@ public class Boundaries {
     }
 
     public synchronized void drawBoundaries(int thickness) {
-        //thickness = thickness % 2 == 0 ? thickness / 2 : (thickness + 1) / 2;
+        thickness = thickness % 2 == 0 ? thickness : thickness + 1;
 
         if (this.cellMapFor2px == null || this.cellMapFor2px.size() == 0) {
             calculate2pxBoundary();
@@ -95,6 +95,8 @@ public class Boundaries {
     }
 
     public synchronized void drawBoundaries(int thickness, SubPhaseRegion subPhaseRegion) {
+        thickness = thickness % 2 == 0 ? thickness : thickness + 1;
+
 
         if (this.cellMapFor2px == null || this.cellMapFor2px.size() == 0) {
             calculate2pxBoundary(subPhaseRegion);

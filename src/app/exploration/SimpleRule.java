@@ -168,9 +168,5 @@ public class SimpleRule extends ExplorationRule {
         } else {
             return false;
         }
-
-
-
-
     }
 }

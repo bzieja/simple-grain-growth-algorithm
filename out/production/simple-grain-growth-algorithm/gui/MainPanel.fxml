@@ -43,14 +43,14 @@
       <Label layoutX="16.0" layoutY="177.0" prefHeight="25.0" prefWidth="121.0" text="Number of inclusions" />
       <Label layoutX="17.0" layoutY="220.0" text="Size of inclusions" />
       <Label layoutX="17.0" layoutY="258.0" text="Type of inclusions:" />
-      <RadioButton fx:id="squareInclusionRadioButton" layoutX="142.0" layoutY="249.0" mnemonicParsing="false" selected="true" text="square inclusion">
+      <RadioButton fx:id="squareInclusionRadioButton" layoutX="125.0" layoutY="249.0" mnemonicParsing="false" selected="true" text="square inclusion">
          <toggleGroup>
             <ToggleGroup fx:id="typeOfInclusion" />
          </toggleGroup>
       </RadioButton>
-      <RadioButton fx:id="circleInclusionRadioButton" layoutX="142.0" layoutY="279.0" mnemonicParsing="false" selected="true" text="circle inclusion" toggleGroup="$typeOfInclusion" />
-      <Button fx:id="startSimulationButton" layoutX="129.0" layoutY="378.0" mnemonicParsing="false" onAction="#startSimulation" prefHeight="25.0" prefWidth="134.0" text="Start simulation" />
-      <Button fx:id="addInclusionsButton" layoutX="17.0" layoutY="284.0" mnemonicParsing="false" onAction="#addInclusionsToExistingCellBoard" prefHeight="25.0" prefWidth="98.0" text="Add inclusions" />
+      <RadioButton fx:id="circleInclusionRadioButton" layoutX="125.0" layoutY="276.0" mnemonicParsing="false" selected="true" text="circle inclusion" toggleGroup="$typeOfInclusion" />
+      <Button fx:id="startSimulationButton" layoutX="140.0" layoutY="395.0" mnemonicParsing="false" onAction="#startSimulation" prefHeight="25.0" prefWidth="141.0" text="Start simulation" />
+      <Button fx:id="addInclusionsButton" layoutX="17.0" layoutY="281.0" mnemonicParsing="false" onAction="#addInclusionsToExistingCellBoard" prefHeight="25.0" prefWidth="98.0" text="Add inclusions" />
       <Label layoutX="15.0" layoutY="36.0" prefHeight="17.0" prefWidth="98.0" text="Dimension of X:" />
       <Label layoutX="14.0" layoutY="65.0" prefHeight="17.0" prefWidth="91.0" text="Dimension of Y:" />
       <TextField fx:id="dimensionXField" layoutX="112.0" layoutY="32.0" prefHeight="25.0" prefWidth="56.0" text="120" />
@@ -62,19 +62,26 @@
          </toggleGroup>
       </RadioButton>
       <RadioButton fx:id="periodicRadioButton" layoutX="146.0" layoutY="152.0" mnemonicParsing="false" selected="true" text="periodic" toggleGroup="$boundaryConditions" />
-      <Button fx:id="clearDataButton" layoutX="16.0" layoutY="347.0" mnemonicParsing="false" onAction="#clearData" text="Clear Data" />
-      <CheckBox fx:id="startWithInclusionsCheckBox" layoutX="133.0" layoutY="351.0" mnemonicParsing="false" text="Start with inclusions" />
-      <TextField fx:id="probabilityOfChangeField" layoutX="174.0" layoutY="317.0" prefHeight="25.0" prefWidth="45.0" text="90" />
-      <Label layoutX="17.0" layoutY="315.0" prefHeight="28.0" prefWidth="161.0" text="Probability of change [%]" />
-      <Label layoutX="43.0" layoutY="403.0" prefHeight="17.0" prefWidth="84.0" text="Sub-structure" />
-      <Button fx:id="startSelectingImmutablePhasesButton" layoutX="16.0" layoutY="428.0" mnemonicParsing="false" onAction="#startSelectingImmutablePhases" prefHeight="25.0" prefWidth="247.0" text="Select immutable phases" />
-      <Label layoutX="18.0" layoutY="465.0" prefHeight="17.0" prefWidth="200.0" text="Number of grains in sub-structures:" />
-      <TextField fx:id="numberOfGrainsInSubStructuresField" layoutX="218.0" layoutY="461.0" prefHeight="25.0" prefWidth="45.0" text="3" />
-      <Button fx:id="addSubStructuresButton" layoutX="16.0" layoutY="492.0" mnemonicParsing="false" onAction="#addSubStructures" prefHeight="25.0" prefWidth="247.0" text="Add sub-structures" />
-      <Slider fx:id="thicknessSlider" blockIncrement="2.0" layoutX="17.0" layoutY="562.0" majorTickUnit="2.0" max="6.0" min="2.0" minorTickCount="2" prefHeight="17.0" prefWidth="99.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" value="2.0" />
-      <Label layoutX="21.0" layoutY="537.0" prefHeight="17.0" prefWidth="154.0" text="Thickness of boundaries [px]" />
-      <Button fx:id="showHideAllBoundariesButton" layoutX="127.0" layoutY="568.0" mnemonicParsing="false" onAction="#showHideAllBoundaries" prefHeight="25.0" prefWidth="154.0" text="Show grains' boundaries" />
-      <Button fx:id="showBoundariesOfParticularGrainButton" layoutX="23.0" layoutY="608.0" mnemonicParsing="false" onAction="#showBoundariesOfParticularGrain" prefHeight="28.0" prefWidth="257.0" text="Show boundaries of particular grain" />
-      <Button fx:id="clearSpaceButton" layoutX="188.0" layoutY="533.0" mnemonicParsing="false" onAction="#clearSpace" prefHeight="25.0" prefWidth="91.0" text="Clear space" />
+      <CheckBox fx:id="startWithInclusionsCheckBox" layoutX="9.0" layoutY="399.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="154.0" text="Start with inclusions" />
+      <TextField fx:id="probabilityOfChangeField" layoutX="174.0" layoutY="363.0" prefHeight="25.0" prefWidth="45.0" text="90" />
+      <Label layoutX="14.0" layoutY="362.0" prefHeight="28.0" prefWidth="161.0" text="Probability of change [%]" />
+      <Label layoutX="30.0" layoutY="424.0" prefHeight="17.0" prefWidth="209.0" text="Dual phase &amp; substructure options:" />
+      <Button fx:id="startSelectingImmutablePhasesButton" layoutX="11.0" layoutY="480.0" mnemonicParsing="false" onAction="#startSelectingImmutablePhases" prefHeight="25.0" prefWidth="121.0" text="Select dualphase" />
+      <Label layoutX="9.0" layoutY="451.0" prefHeight="17.0" prefWidth="200.0" text="Number of grains in substructures:" />
+      <TextField fx:id="numberOfGrainsInSubStructuresField" layoutX="208.0" layoutY="447.0" prefHeight="25.0" prefWidth="45.0" text="3" />
+      <Button fx:id="addSubStructuresButton" layoutX="141.0" layoutY="480.0" mnemonicParsing="false" onAction="#addSubStructures" prefHeight="25.0" prefWidth="121.0" text="Add substructures" />
+      <Slider fx:id="thicknessSlider" blockIncrement="2.0" layoutX="12.0" layoutY="558.0" majorTickUnit="2.0" max="6.0" min="2.0" minorTickCount="2" prefHeight="38.0" prefWidth="82.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" value="2.0" />
+      <Label layoutX="9.0" layoutY="529.0" prefHeight="17.0" prefWidth="154.0" text="Thickness of boundaries [px]" />
+      <Button fx:id="showHideAllBoundariesButton" layoutX="99.0" layoutY="558.0" mnemonicParsing="false" onAction="#showHideAllBoundaries" prefHeight="25.0" prefWidth="179.0" text="Show all grains' boundaries" />
+      <Button fx:id="showBoundariesOfParticularGrainButton" layoutX="11.0" layoutY="604.0" mnemonicParsing="false" onAction="#showBoundariesOfParticularGrain" prefHeight="28.0" prefWidth="209.0" text="Show boundaries of particular grain" wrapText="true" />
+      <Button fx:id="clearSpaceButton" layoutX="226.0" layoutY="595.0" mnemonicParsing="false" onAction="#clearSpace" prefHeight="47.0" prefWidth="56.0" text="Clear space" wrapText="true" />
+      <Label layoutX="35.0" layoutY="512.0" prefHeight="17.0" prefWidth="209.0" text="Grain boundary visualization options" />
+      <RadioButton fx:id="curvatureTypeOfGrowth" layoutX="132.0" layoutY="337.0" mnemonicParsing="false" selected="true" text="curvature">
+         <toggleGroup>
+            <ToggleGroup fx:id="typeOfGrowth" />
+         </toggleGroup>
+      </RadioButton>
+      <RadioButton fx:id="simpleTypeOfGrowth" layoutX="132.0" layoutY="317.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="64.0" text="simple" toggleGroup="$typeOfGrowth" />
+      <Label layoutX="23.0" layoutY="328.0" prefHeight="17.0" prefWidth="107.0" text="Type of growth" />
     </children>
 </AnchorPane>
