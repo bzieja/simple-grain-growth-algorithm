@@ -63,10 +63,59 @@ public class MainController implements Initializable {
     public Button showBoundariesOfParticularGrainButton;
     public Button clearSpaceButton;
     GrainMap grainMap;
+    EventHandler<MouseEvent> selectImmutablePhasesEventHandler;
+    EventHandler<MouseEvent> selectParticularGrainEventHandler;
+
 
     @FXML
     public void initialize(URL url, ResourceBundle resourceBundle) {
         canvas.setVisible(true);
+
+        selectImmutablePhasesEventHandler = new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                double x = mouseEvent.getX();
+                double y = mouseEvent.getY();
+                CanvasPrinter canvasPrinter = CanvasPrinter.getInstance();
+
+                if (!SubPhase.hasInstance()) {
+                    int phaseToChange = canvasPrinter.getCellIdByCoordinates(x, y);
+
+                    //changed all id of clicked phase to unmutable phase
+                    grainMap.changePhaseToImmutable(phaseToChange);
+
+                } else
+                {
+                    Cell cell = canvasPrinter.getCellByCoordinates(x, y);
+
+                    SubPhase subPhase = SubPhase.getInstance();
+                    subPhase.divideIntoRegions();
+                    subPhase.changeRegionToImmutable(subPhase.getSubPhaseRegionByCell(cell));
+
+                }
+                canvasPrinter.generateView();
+            }
+        };
+
+        selectParticularGrainEventHandler = new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                double x = mouseEvent.getX();
+                double y = mouseEvent.getY();
+                CanvasPrinter canvasPrinter = CanvasPrinter.getInstance();
+                Cell cell = canvasPrinter.getCellByCoordinates(x, y);
+
+                SubPhase subPhase = SubPhase.getInstance();
+                subPhase.divideIntoRegions();
+                Boundaries.clear();
+                Boundaries.getInstance().drawBoundaries(Math.round((int) thicknessSlider.getValue()), subPhase.getSubPhaseRegionByCell(cell));
+
+                canvasPrinter.generateView();
+            }
+        };
+
+
+
     }
 
     public void startSimulation() {
@@ -360,30 +409,8 @@ public class MainController implements Initializable {
     }
 
     public void startSelectingImmutablePhases() {
-        canvas.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                double x = mouseEvent.getX();
-                double y = mouseEvent.getY();
-                CanvasPrinter canvasPrinter = CanvasPrinter.getInstance();
-
-                if (!SubPhase.hasInstance()) {
-                    int phaseToChange = canvasPrinter.getCellIdByCoordinates(x, y);
-
-                    //changed all id of clicked phase to unmutable phase
-                    grainMap.changePhaseToImmutable(phaseToChange);
-
-                } else {
-                    Cell cell = canvasPrinter.getCellByCoordinates(x, y);
-
-                    SubPhase subPhase = SubPhase.getInstance();
-                    subPhase.divideIntoRegions();
-                    subPhase.changeRegionToImmutable(subPhase.getSubPhaseRegionByCell(cell));
-
-                }
-                canvasPrinter.generateView();
-            }
-        });
+        canvas.removeEventHandler(MouseEvent.MOUSE_CLICKED, selectParticularGrainEventHandler);
+        canvas.addEventHandler(MouseEvent.MOUSE_CLICKED, selectImmutablePhasesEventHandler);
     }
 
     public void addSubStructures() {
@@ -410,11 +437,13 @@ public class MainController implements Initializable {
     }
 
     public void showHideAllBoundaries() {
-        Boundaries.getInstance().drawBoundaries(2);
+        Boundaries.getInstance().drawBoundaries(Math.round((int) thicknessSlider.getValue()));
         CanvasPrinter.getInstance().generateView();
     }
 
     public void showBoundariesOfParticularGrain() {
+        canvas.removeEventHandler(MouseEvent.MOUSE_CLICKED, selectImmutablePhasesEventHandler);
+        canvas.addEventHandler(MouseEvent.MOUSE_CLICKED, selectParticularGrainEventHandler);
     }
 
     public void clearSpace() {

@@ -3,7 +3,9 @@ package app.grid;
 import app.AppConfiguration;
 import app.exploration.Neighborhood;
 import app.inclusion.Inclusion;
+import app.subphase.SubPhase;
 
+import java.io.*;
 import java.util.Random;
 import java.util.stream.Stream;
 
@@ -112,4 +114,34 @@ public class GrainMap {
         }
         return instance;
     }
+
+//    public static int IdCounter = 0;
+//    private static GrainMap instance;
+//    public int numberOfInitialGrains;
+//    public int numberOfCellsAtX;
+//    public int numberOfCellsAtY;
+//    public String neighbourType;
+//    public Cell[][] currentStep;
+
+    public void setCurrentStep(Cell[][] board) {
+        this.currentStep = board;
+    }
+
+    public Cell[][] copyCurrentStep() {
+        Cell[][] copy = new Cell[currentStep.length][currentStep[0].length];
+
+        for (int i = 0; i < currentStep.length; i++) {
+            for (int j = 0; j < currentStep[0].length; j++) {
+                   copy[i][j] = currentStep[i][j].copy();
+            }
+        }
+
+        return copy;
+    }
+
+    public static void setInstance(GrainMap instance1) {
+        instance = null;
+        instance = instance1;
+    }
+
 }

@@ -1,5 +1,7 @@
 package app.grid;
 
+import java.io.Serializable;
+
 public class Cell {
     int x;
     int y;
@@ -97,7 +99,24 @@ public class Cell {
     public void setId(int id) {
         this.id = id;
     }
-/*
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (!(obj instanceof Cell)) {
+          return false;
+        }
+
+        Cell guest = (Cell) obj;
+        return this.id == guest.id
+                &&  (this.x == guest.x)
+                && (this.y == guest.y);
+
+    }
+
+    /*
     public int[] getRgb() {
         return rgb;
     }

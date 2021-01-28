@@ -5,6 +5,7 @@ import app.grid.Cell;
 import app.grid.GrainMap;
 import gui.CanvasPrinter;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -14,27 +15,33 @@ import java.util.stream.Stream;
 
 public class SubPhase {
     static SubPhase instance;
-    GrainMap grainMap;
+    //GrainMap grainMap;
     int numberOfGrainsAtTheStart;
     int numberOfGrainsAtTheEnd;
     public List<SubPhaseRegion> subPhaseRegions;
 
 
     public SubPhase() {
-        this.grainMap = GrainMap.getInstance();
+        //this.grainMap = GrainMap.getInstance();
         this.subPhaseRegions = new ArrayList<>();
+    }
 
+    public SubPhase(List<SubPhaseRegion> subPhaseRegions, int start, int end) {
+        //this.grainMap = grainMap;
+        this.subPhaseRegions = subPhaseRegions;
+        this.numberOfGrainsAtTheStart = start;
+        this.numberOfGrainsAtTheEnd = end;
     }
 
     public synchronized void divideIntoRegions() {
-        Arrays.stream(grainMap.currentStep).flatMap(Stream::of).forEach(x -> x.setChangedSecondTime(false));
+        Arrays.stream(GrainMap.getInstance().currentStep).flatMap(Stream::of).forEach(x -> x.setChangedSecondTime(false));
         numberOfGrainsAtTheStart = CanvasPrinter.getInstance().getCellsRGB().length;
         numberOfGrainsAtTheEnd = numberOfGrainsAtTheStart + AppConfiguration.getInstance().getNumberOfGrainsInSubPhases();
 
         if (subPhaseRegions.size() == 0) { //if it's first creating
             for (int i = 0; i < numberOfGrainsAtTheStart; i++) {   //create region for each existing colour of cells
-                if (grainMap.containsPhase(i)) {
-                    subPhaseRegions.add(new SubPhaseRegion(i, grainMap));  //init regions
+                if (GrainMap.getInstance().containsPhase(i)) {
+                    subPhaseRegions.add(new SubPhaseRegion(i, GrainMap.getInstance()));  //init regions
                 }
             }
         } else {
@@ -73,12 +80,12 @@ public class SubPhase {
 
     public synchronized void nextSubPhaseStep() {
         for (SubPhaseRegion subPhaseRegion : subPhaseRegions) {
-            subPhaseRegion.nextStep(grainMap);
+            subPhaseRegion.nextStep(GrainMap.getInstance());
         }
     }
 
     public boolean isSubStructureIncomplete() {
-        return Stream.of(grainMap.currentStep).flatMap(Stream::of).anyMatch(x -> !x.isInclusion() && !x.isImmutablePhase() && !x.isChangedSecondTime());
+        return Stream.of(GrainMap.getInstance().currentStep).flatMap(Stream::of).anyMatch(x -> !x.isInclusion() && !x.isImmutablePhase() && !x.isChangedSecondTime());
     }
 
     public static SubPhase getInstance() {
@@ -86,6 +93,17 @@ public class SubPhase {
             instance = new SubPhase();
         }
         return instance;
+    }
+
+    public static SubPhase replaceAndGetInstance(List<SubPhaseRegion> subPhaseRegions, int start, int end) {
+        instance = new SubPhase(subPhaseRegions, start, end);
+        return instance;
+    }
+
+    public void setConfigurables(List<SubPhaseRegion> subPhaseRegions, int start, int end) {
+        this.subPhaseRegions = subPhaseRegions;
+        this.numberOfGrainsAtTheStart = start;
+        this.numberOfGrainsAtTheEnd = end;
     }
 
     public static boolean hasInstance() {
@@ -99,10 +117,6 @@ public class SubPhase {
     public SubPhaseRegion getSubPhaseRegionByCell(Cell cell1) {
         SubPhaseRegion subPhaseRegion1 = null;
         for (SubPhaseRegion subPhaseRegion : subPhaseRegions) {
-//            if (subPhaseRegion.getSubPhaseCells().contains(cell1)) {
-//                return subPhaseRegion;
-//            }
-
             if (subPhaseRegion.getRegionCells().stream().anyMatch(x -> (x.getX() == cell1.getX() && x.getY() == cell1.getY()))) {
                 subPhaseRegion1 = subPhaseRegion;
             }
@@ -131,5 +145,39 @@ public class SubPhase {
 
     public List<SubPhaseRegion> getSubPhaseRegions() {
         return subPhaseRegions;
+    }
+
+    public static void setInstance(SubPhase instance1) {
+        instance = null;
+        instance = instance1;
+    }
+
+    public synchronized List<SubPhaseRegion> copySubRegions() {
+        List<SubPhaseRegion> result = new ArrayList<>();
+
+        for (SubPhaseRegion subPhaseRegion : this.getSubPhaseRegions()) {
+
+            List<Cell> cells = new ArrayList<>();
+            for (int i = 0; i < subPhaseRegion.cells.size(); i++) {
+                cells.add(subPhaseRegion.cells.get(i).copy());
+            }
+
+            result.add(new SubPhaseRegion(subPhaseRegion.idOfCellsInRegion, cells));
+        }
+
+        return result;
+    }
+
+    public synchronized void setSubPhaseRegions(List<SubPhaseRegion> list) {
+        divideIntoRegions();
+        this.subPhaseRegions = list;
+    }
+
+    public int getNumberOfGrainsAtTheStart() {
+        return numberOfGrainsAtTheStart;
+    }
+
+    public int getNumberOfGrainsAtTheEnd() {
+        return numberOfGrainsAtTheEnd;
     }
 }

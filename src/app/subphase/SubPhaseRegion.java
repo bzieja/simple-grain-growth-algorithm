@@ -3,6 +3,7 @@ package app.subphase;
 import app.grid.Cell;
 import app.grid.GrainMap;
 
+import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -142,7 +143,6 @@ public class SubPhaseRegion {
         Map<Integer, List<Cell>> regions = cells.stream().collect(Collectors.groupingBy(Cell::getId));
         //idCells, listOfCells
 
-
         List<SubPhaseRegion> result = new ArrayList<>();
         for (Map.Entry<Integer, List<Cell>> integerListEntry : regions.entrySet()) {
             result.add(new SubPhaseRegion(integerListEntry.getKey(), integerListEntry.getValue()));
@@ -162,4 +162,6 @@ public class SubPhaseRegion {
     public List<Cell> getRegionCells() {
         return cells;
     }
+
+
 }

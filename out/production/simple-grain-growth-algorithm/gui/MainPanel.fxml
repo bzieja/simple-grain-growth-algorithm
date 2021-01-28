@@ -73,7 +73,7 @@
       <Button fx:id="addSubStructuresButton" layoutX="16.0" layoutY="492.0" mnemonicParsing="false" onAction="#addSubStructures" prefHeight="25.0" prefWidth="247.0" text="Add sub-structures" />
       <Slider fx:id="thicknessSlider" blockIncrement="2.0" layoutX="17.0" layoutY="562.0" majorTickUnit="2.0" max="6.0" min="2.0" minorTickCount="2" prefHeight="17.0" prefWidth="99.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" value="2.0" />
       <Label layoutX="21.0" layoutY="537.0" prefHeight="17.0" prefWidth="154.0" text="Thickness of boundaries [px]" />
-      <Button fx:id="showHideAllBoundariesButton" layoutX="127.0" layoutY="568.0" mnemonicParsing="false" onAction="#showHideAllBoundaries" prefHeight="25.0" prefWidth="154.0" text="Show/hide all boundaries" />
+      <Button fx:id="showHideAllBoundariesButton" layoutX="127.0" layoutY="568.0" mnemonicParsing="false" onAction="#showHideAllBoundaries" prefHeight="25.0" prefWidth="154.0" text="Show grains' boundaries" />
       <Button fx:id="showBoundariesOfParticularGrainButton" layoutX="23.0" layoutY="608.0" mnemonicParsing="false" onAction="#showBoundariesOfParticularGrain" prefHeight="28.0" prefWidth="257.0" text="Show boundaries of particular grain" />
       <Button fx:id="clearSpaceButton" layoutX="188.0" layoutY="533.0" mnemonicParsing="false" onAction="#clearSpace" prefHeight="25.0" prefWidth="91.0" text="Clear space" />
     </children>
