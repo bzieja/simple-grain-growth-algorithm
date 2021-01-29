@@ -1,5 +1,6 @@
 package app.boundaries;
 
+import app.AppConfiguration;
 import app.grid.Cell;
 import app.grid.GrainMap;
 import app.subphase.SubPhase;
@@ -163,53 +164,122 @@ public class Boundaries {
             //immutable condition will be enough
             //up
 
-            Cell neighbour1 = boardToExplore[(x - 1 + xDimension) % xDimension][y];
-            if (!previousCells.contains(neighbour1)) {
-                this.cellMapFor4px.putIfAbsent(neighbour1, new AbstractMap.SimpleEntry<>(neighbour1.getId(), SubPhase.getInstance().getSubPhaseRegionByCell(neighbour1)));
+            if (AppConfiguration.getInstance().getNeighbourType().equals("periodic")) {
+                Cell neighbour1 = boardToExplore[(x - 1 + xDimension) % xDimension][y];
+                if (!previousCells.contains(neighbour1)) {
+                    this.cellMapFor4px.putIfAbsent(neighbour1, new AbstractMap.SimpleEntry<>(neighbour1.getId(), SubPhase.getInstance().getSubPhaseRegionByCell(neighbour1)));
+                }
+
+                //up-right corner
+                //if (!boardToExplore[(x - 1 + xDimension) % xDimension][(y + 1) % yDimension].isImmutableOrEmptyOrInclusion()) {
+                Cell neighbour2 = boardToExplore[(x - 1 + xDimension) % xDimension][(y + 1) % yDimension];
+                if (!previousCells.contains(boardToExplore[(x - 1 + xDimension) % xDimension][(y + 1) % yDimension])) {
+                    this.cellMapFor4px.putIfAbsent(neighbour2, new AbstractMap.SimpleEntry<>(neighbour2.getId(), SubPhase.getInstance().getSubPhaseRegionByCell(neighbour2)));
+                }
+
+                //right
+                Cell neighbour3 = boardToExplore[x][(y + 1) % yDimension];
+                if (!previousCells.contains(boardToExplore[x][(y + 1) % yDimension])) {
+                    this.cellMapFor4px.putIfAbsent(neighbour3, new AbstractMap.SimpleEntry<>(neighbour3.getId(), SubPhase.getInstance().getSubPhaseRegionByCell(neighbour3)));
+                }
+
+                //down-right corner
+                Cell neighbour4 = boardToExplore[(x + 1) % xDimension][(y + 1) % yDimension];
+                if (!previousCells.contains(boardToExplore[(x + 1) % xDimension][(y + 1) % yDimension])) {
+                    this.cellMapFor4px.putIfAbsent(neighbour4, new AbstractMap.SimpleEntry<>(neighbour4.getId(), SubPhase.getInstance().getSubPhaseRegionByCell(neighbour4)));
+                }
+
+                //down
+                Cell neighbour5 = boardToExplore[(x + 1) % xDimension][y];
+                if (!previousCells.contains(boardToExplore[(x + 1) % xDimension][y])) {
+                    this.cellMapFor4px.putIfAbsent(neighbour5, new AbstractMap.SimpleEntry<>(neighbour5.getId(), SubPhase.getInstance().getSubPhaseRegionByCell(neighbour5)));
+                }
+
+                //down-left corner
+                Cell neighbour6 = boardToExplore[(x + 1) % xDimension][(y - 1 + yDimension) % yDimension];
+                if (!previousCells.contains(boardToExplore[(x + 1) % xDimension][(y - 1 + yDimension) % yDimension])) {
+                    this.cellMapFor4px.putIfAbsent(neighbour6, new AbstractMap.SimpleEntry<>(neighbour6.getId(), SubPhase.getInstance().getSubPhaseRegionByCell(neighbour6)));
+                }
+
+                //left corner
+                Cell neighbour7 = boardToExplore[x][(y - 1 + yDimension) % yDimension];
+                if (!previousCells.contains(boardToExplore[x][(y - 1 + yDimension) % yDimension])) {
+                    this.cellMapFor4px.putIfAbsent(neighbour7, new AbstractMap.SimpleEntry<>(neighbour7.getId(), SubPhase.getInstance().getSubPhaseRegionByCell(neighbour7)));
+                }
+
+                //up-left corner
+                Cell neighbour8 = boardToExplore[(x - 1 + xDimension) % xDimension][(y - 1 + yDimension) % yDimension];
+                if (!previousCells.contains(boardToExplore[(x - 1 + xDimension) % xDimension][(y - 1 + yDimension) % yDimension])) {
+                    this.cellMapFor4px.putIfAbsent(neighbour8, new AbstractMap.SimpleEntry<>(neighbour8.getId(), SubPhase.getInstance().getSubPhaseRegionByCell(neighbour8)));
+                }
+            } else if(AppConfiguration.getInstance().getNeighbourType().equals("absorbing")) {
+
+                if (x - 1 > 0) {
+                    Cell neighbour1 = boardToExplore[(x - 1 + xDimension) % xDimension][y];
+                    if (!previousCells.contains(neighbour1)) {
+                        this.cellMapFor4px.putIfAbsent(neighbour1, new AbstractMap.SimpleEntry<>(neighbour1.getId(), SubPhase.getInstance().getSubPhaseRegionByCell(neighbour1)));
+                    }
+                }
+
+                //up-right corner
+                if (x - 1 > 0 && y + 1 < yDimension) {
+                    Cell neighbour2 = boardToExplore[(x - 1 + xDimension) % xDimension][(y + 1) % yDimension];
+                    if (!previousCells.contains(boardToExplore[(x - 1 + xDimension) % xDimension][(y + 1) % yDimension])) {
+                        this.cellMapFor4px.putIfAbsent(neighbour2, new AbstractMap.SimpleEntry<>(neighbour2.getId(), SubPhase.getInstance().getSubPhaseRegionByCell(neighbour2)));
+                    }
+                }
+
+                //right
+                if (y + 1 < yDimension) {
+                    Cell neighbour3 = boardToExplore[x][(y + 1) % yDimension];
+                    if (!previousCells.contains(boardToExplore[x][(y + 1) % yDimension])) {
+                        this.cellMapFor4px.putIfAbsent(neighbour3, new AbstractMap.SimpleEntry<>(neighbour3.getId(), SubPhase.getInstance().getSubPhaseRegionByCell(neighbour3)));
+                    }
+                }
+
+
+                //down-right corner
+                if (x + 1 < xDimension && y + 1 < yDimension) {
+                    Cell neighbour4 = boardToExplore[(x + 1) % xDimension][(y + 1) % yDimension];
+                    if (!previousCells.contains(boardToExplore[(x + 1) % xDimension][(y + 1) % yDimension])) {
+                        this.cellMapFor4px.putIfAbsent(neighbour4, new AbstractMap.SimpleEntry<>(neighbour4.getId(), SubPhase.getInstance().getSubPhaseRegionByCell(neighbour4)));
+                    }
+                }
+
+                //down
+                if (x + 1 < xDimension) {
+                    Cell neighbour5 = boardToExplore[(x + 1) % xDimension][y];
+                    if (!previousCells.contains(boardToExplore[(x + 1) % xDimension][y])) {
+                        this.cellMapFor4px.putIfAbsent(neighbour5, new AbstractMap.SimpleEntry<>(neighbour5.getId(), SubPhase.getInstance().getSubPhaseRegionByCell(neighbour5)));
+                    }
+                }
+
+
+                //down-left corner
+                if(x + 1 < xDimension && y - 1 > 0) {
+                    Cell neighbour6 = boardToExplore[(x + 1) % xDimension][(y - 1 + yDimension) % yDimension];
+                    if (!previousCells.contains(boardToExplore[(x + 1) % xDimension][(y - 1 + yDimension) % yDimension])) {
+                        this.cellMapFor4px.putIfAbsent(neighbour6, new AbstractMap.SimpleEntry<>(neighbour6.getId(), SubPhase.getInstance().getSubPhaseRegionByCell(neighbour6)));
+                    }
+                }
+
+                //left corner
+                if (y - 1 > 0){
+                    Cell neighbour7 = boardToExplore[x][(y - 1 + yDimension) % yDimension];
+                    if (!previousCells.contains(boardToExplore[x][(y - 1 + yDimension) % yDimension])) {
+                        this.cellMapFor4px.putIfAbsent(neighbour7, new AbstractMap.SimpleEntry<>(neighbour7.getId(), SubPhase.getInstance().getSubPhaseRegionByCell(neighbour7)));
+                    }
+                }
+
+                //up-left corner
+                if (x - 1 > 0 && y - 1 > 0) {
+                    Cell neighbour8 = boardToExplore[(x - 1 + xDimension) % xDimension][(y - 1 + yDimension) % yDimension];
+                    if (!previousCells.contains(boardToExplore[(x - 1 + xDimension) % xDimension][(y - 1 + yDimension) % yDimension])) {
+                        this.cellMapFor4px.putIfAbsent(neighbour8, new AbstractMap.SimpleEntry<>(neighbour8.getId(), SubPhase.getInstance().getSubPhaseRegionByCell(neighbour8)));
+                    }
+                }
             }
 
-            //up-right corner
-            //if (!boardToExplore[(x - 1 + xDimension) % xDimension][(y + 1) % yDimension].isImmutableOrEmptyOrInclusion()) {
-            Cell neighbour2 = boardToExplore[(x - 1 + xDimension) % xDimension][(y + 1) % yDimension];
-            if (!previousCells.contains(boardToExplore[(x - 1 + xDimension) % xDimension][(y + 1) % yDimension])) {
-                this.cellMapFor4px.putIfAbsent(neighbour2, new AbstractMap.SimpleEntry<>(neighbour2.getId(), SubPhase.getInstance().getSubPhaseRegionByCell(neighbour2)));
-            }
-
-            //right
-            Cell neighbour3 = boardToExplore[x][(y + 1) % yDimension];
-            if (!previousCells.contains(boardToExplore[x][(y + 1) % yDimension])) {
-                this.cellMapFor4px.putIfAbsent(neighbour3, new AbstractMap.SimpleEntry<>(neighbour3.getId(), SubPhase.getInstance().getSubPhaseRegionByCell(neighbour3)));
-            }
-
-            //down-right corner
-            Cell neighbour4 = boardToExplore[(x + 1) % xDimension][(y + 1) % yDimension];
-            if (!previousCells.contains(boardToExplore[(x + 1) % xDimension][(y + 1) % yDimension])) {
-                this.cellMapFor4px.putIfAbsent(neighbour4, new AbstractMap.SimpleEntry<>(neighbour4.getId(), SubPhase.getInstance().getSubPhaseRegionByCell(neighbour4)));
-            }
-
-            //down
-            Cell neighbour5 = boardToExplore[(x + 1) % xDimension][y];
-            if (!previousCells.contains(boardToExplore[(x + 1) % xDimension][y])) {
-                this.cellMapFor4px.putIfAbsent(neighbour5, new AbstractMap.SimpleEntry<>(neighbour5.getId(), SubPhase.getInstance().getSubPhaseRegionByCell(neighbour5)));
-            }
-
-            //down-left corner
-            Cell neighbour6 = boardToExplore[(x + 1) % xDimension][(y - 1 + yDimension) % yDimension];
-            if (!previousCells.contains(boardToExplore[(x + 1) % xDimension][(y - 1 + yDimension) % yDimension])) {
-                this.cellMapFor4px.putIfAbsent(neighbour6, new AbstractMap.SimpleEntry<>(neighbour6.getId(), SubPhase.getInstance().getSubPhaseRegionByCell(neighbour6)));
-            }
-
-            //left corner
-            Cell neighbour7 = boardToExplore[x][(y - 1 + yDimension) % yDimension];
-            if (!previousCells.contains(boardToExplore[x][(y - 1 + yDimension) % yDimension])) {
-                this.cellMapFor4px.putIfAbsent(neighbour7, new AbstractMap.SimpleEntry<>(neighbour7.getId(), SubPhase.getInstance().getSubPhaseRegionByCell(neighbour7)));
-            }
-
-            //up-left corner
-            Cell neighbour8 = boardToExplore[(x - 1 + xDimension) % xDimension][(y - 1 + yDimension) % yDimension];
-            if (!previousCells.contains(boardToExplore[(x - 1 + xDimension) % xDimension][(y - 1 + yDimension) % yDimension])) {
-                this.cellMapFor4px.putIfAbsent(neighbour8, new AbstractMap.SimpleEntry<>(neighbour8.getId(), SubPhase.getInstance().getSubPhaseRegionByCell(neighbour8)));
-            }
         }
     }
 
@@ -236,53 +306,120 @@ public class Boundaries {
             //immutable condition will be enough
             //up
 
-            Cell neighbour1 = boardToExplore[(x - 1 + xDimension) % xDimension][y];
-            if (!previousCells.contains(neighbour1)) {
-                this.cellMapFor6px.putIfAbsent(neighbour1, new AbstractMap.SimpleEntry<>(neighbour1.getId(), SubPhase.getInstance().getSubPhaseRegionByCell(neighbour1)));
+            if (AppConfiguration.getInstance().getNeighbourType().equals("periodic")) {
+                Cell neighbour1 = boardToExplore[(x - 1 + xDimension) % xDimension][y];
+                if (!previousCells.contains(neighbour1)) {
+                    this.cellMapFor6px.putIfAbsent(neighbour1, new AbstractMap.SimpleEntry<>(neighbour1.getId(), SubPhase.getInstance().getSubPhaseRegionByCell(neighbour1)));
+                }
+
+                //up-right corner
+                //if (!boardToExplore[(x - 1 + xDimension) % xDimension][(y + 1) % yDimension].isImmutableOrEmptyOrInclusion()) {
+                Cell neighbour2 = boardToExplore[(x - 1 + xDimension) % xDimension][(y + 1) % yDimension];
+                if (!previousCells.contains(boardToExplore[(x - 1 + xDimension) % xDimension][(y + 1) % yDimension])) {
+                    this.cellMapFor6px.putIfAbsent(neighbour2, new AbstractMap.SimpleEntry<>(neighbour2.getId(), SubPhase.getInstance().getSubPhaseRegionByCell(neighbour2)));
+                }
+
+                //right
+                Cell neighbour3 = boardToExplore[x][(y + 1) % yDimension];
+                if (!previousCells.contains(boardToExplore[x][(y + 1) % yDimension])) {
+                    this.cellMapFor6px.putIfAbsent(neighbour3, new AbstractMap.SimpleEntry<>(neighbour3.getId(), SubPhase.getInstance().getSubPhaseRegionByCell(neighbour3)));
+                }
+
+                //down-right corner
+                Cell neighbour4 = boardToExplore[(x + 1) % xDimension][(y + 1) % yDimension];
+                if (!previousCells.contains(boardToExplore[(x + 1) % xDimension][(y + 1) % yDimension])) {
+                    this.cellMapFor6px.putIfAbsent(neighbour4, new AbstractMap.SimpleEntry<>(neighbour4.getId(), SubPhase.getInstance().getSubPhaseRegionByCell(neighbour4)));
+                }
+
+                //down
+                Cell neighbour5 = boardToExplore[(x + 1) % xDimension][y];
+                if (!previousCells.contains(boardToExplore[(x + 1) % xDimension][y])) {
+                    this.cellMapFor6px.putIfAbsent(neighbour5, new AbstractMap.SimpleEntry<>(neighbour5.getId(), SubPhase.getInstance().getSubPhaseRegionByCell(neighbour5)));
+                }
+
+                //down-left corner
+                Cell neighbour6 = boardToExplore[(x + 1) % xDimension][(y - 1 + yDimension) % yDimension];
+                if (!previousCells.contains(boardToExplore[(x + 1) % xDimension][(y - 1 + yDimension) % yDimension])) {
+                    this.cellMapFor6px.putIfAbsent(neighbour6, new AbstractMap.SimpleEntry<>(neighbour6.getId(), SubPhase.getInstance().getSubPhaseRegionByCell(neighbour6)));
+                }
+
+                //left corner
+                Cell neighbour7 = boardToExplore[x][(y - 1 + yDimension) % yDimension];
+                if (!previousCells.contains(boardToExplore[x][(y - 1 + yDimension) % yDimension])) {
+                    this.cellMapFor6px.putIfAbsent(neighbour7, new AbstractMap.SimpleEntry<>(neighbour7.getId(), SubPhase.getInstance().getSubPhaseRegionByCell(neighbour7)));
+                }
+
+                //up-left corner
+                Cell neighbour8 = boardToExplore[(x - 1 + xDimension) % xDimension][(y - 1 + yDimension) % yDimension];
+                if (!previousCells.contains(boardToExplore[(x - 1 + xDimension) % xDimension][(y - 1 + yDimension) % yDimension])) {
+                    this.cellMapFor6px.putIfAbsent(neighbour8, new AbstractMap.SimpleEntry<>(neighbour8.getId(), SubPhase.getInstance().getSubPhaseRegionByCell(neighbour8)));
+                }
+            } else if (AppConfiguration.getInstance().getNeighbourType().equals("absorbing")){
+                //up
+                if (x - 1 > 0){
+                    Cell neighbour1 = boardToExplore[(x - 1 + xDimension) % xDimension][y];
+                    if (!previousCells.contains(neighbour1)) {
+                        this.cellMapFor6px.putIfAbsent(neighbour1, new AbstractMap.SimpleEntry<>(neighbour1.getId(), SubPhase.getInstance().getSubPhaseRegionByCell(neighbour1)));
+                    }
+                }
+
+                //up-right corner
+                if (x - 1 > 0 && y + 1 < yDimension){
+                    Cell neighbour2 = boardToExplore[(x - 1 + xDimension) % xDimension][(y + 1) % yDimension];
+                    if (!previousCells.contains(boardToExplore[(x - 1 + xDimension) % xDimension][(y + 1) % yDimension])) {
+                        this.cellMapFor6px.putIfAbsent(neighbour2, new AbstractMap.SimpleEntry<>(neighbour2.getId(), SubPhase.getInstance().getSubPhaseRegionByCell(neighbour2)));
+                    }
+                }
+
+                //right
+                if (y + 1 < yDimension){
+                    Cell neighbour3 = boardToExplore[x][(y + 1) % yDimension];
+                    if (!previousCells.contains(boardToExplore[x][(y + 1) % yDimension])) {
+                        this.cellMapFor6px.putIfAbsent(neighbour3, new AbstractMap.SimpleEntry<>(neighbour3.getId(), SubPhase.getInstance().getSubPhaseRegionByCell(neighbour3)));
+                    }
+                }
+
+                //down-right corner
+                if (x + 1 < xDimension && y + 1 < yDimension){
+                    Cell neighbour4 = boardToExplore[(x + 1) % xDimension][(y + 1) % yDimension];
+                    if (!previousCells.contains(boardToExplore[(x + 1) % xDimension][(y + 1) % yDimension])) {
+                        this.cellMapFor6px.putIfAbsent(neighbour4, new AbstractMap.SimpleEntry<>(neighbour4.getId(), SubPhase.getInstance().getSubPhaseRegionByCell(neighbour4)));
+                    }
+                }
+
+                //down
+                if (x + 1 < xDimension){
+                    Cell neighbour5 = boardToExplore[(x + 1) % xDimension][y];
+                    if (!previousCells.contains(boardToExplore[(x + 1) % xDimension][y])) {
+                        this.cellMapFor6px.putIfAbsent(neighbour5, new AbstractMap.SimpleEntry<>(neighbour5.getId(), SubPhase.getInstance().getSubPhaseRegionByCell(neighbour5)));
+                    }
+                }
+
+                //down-left corner
+                if (x + 1 < xDimension && y - 1 > 0){
+                    Cell neighbour6 = boardToExplore[(x + 1) % xDimension][(y - 1 + yDimension) % yDimension];
+                    if (!previousCells.contains(boardToExplore[(x + 1) % xDimension][(y - 1 + yDimension) % yDimension])) {
+                        this.cellMapFor6px.putIfAbsent(neighbour6, new AbstractMap.SimpleEntry<>(neighbour6.getId(), SubPhase.getInstance().getSubPhaseRegionByCell(neighbour6)));
+                    }
+                }
+
+                //left corner
+                if (y - 1 > 0){
+                    Cell neighbour7 = boardToExplore[x][(y - 1 + yDimension) % yDimension];
+                    if (!previousCells.contains(boardToExplore[x][(y - 1 + yDimension) % yDimension])) {
+                        this.cellMapFor6px.putIfAbsent(neighbour7, new AbstractMap.SimpleEntry<>(neighbour7.getId(), SubPhase.getInstance().getSubPhaseRegionByCell(neighbour7)));
+                    }
+                }
+
+                //up-left corner
+                if (x - 1 > 0 && y - 1 > 0) {
+                    Cell neighbour8 = boardToExplore[(x - 1 + xDimension) % xDimension][(y - 1 + yDimension) % yDimension];
+                    if (!previousCells.contains(boardToExplore[(x - 1 + xDimension) % xDimension][(y - 1 + yDimension) % yDimension])) {
+                        this.cellMapFor6px.putIfAbsent(neighbour8, new AbstractMap.SimpleEntry<>(neighbour8.getId(), SubPhase.getInstance().getSubPhaseRegionByCell(neighbour8)));
+                    }
+                }
             }
 
-            //up-right corner
-            //if (!boardToExplore[(x - 1 + xDimension) % xDimension][(y + 1) % yDimension].isImmutableOrEmptyOrInclusion()) {
-            Cell neighbour2 = boardToExplore[(x - 1 + xDimension) % xDimension][(y + 1) % yDimension];
-            if (!previousCells.contains(boardToExplore[(x - 1 + xDimension) % xDimension][(y + 1) % yDimension])) {
-                this.cellMapFor6px.putIfAbsent(neighbour2, new AbstractMap.SimpleEntry<>(neighbour2.getId(), SubPhase.getInstance().getSubPhaseRegionByCell(neighbour2)));
-            }
-
-            //right
-            Cell neighbour3 = boardToExplore[x][(y + 1) % yDimension];
-            if (!previousCells.contains(boardToExplore[x][(y + 1) % yDimension])) {
-                this.cellMapFor6px.putIfAbsent(neighbour3, new AbstractMap.SimpleEntry<>(neighbour3.getId(), SubPhase.getInstance().getSubPhaseRegionByCell(neighbour3)));
-            }
-
-            //down-right corner
-            Cell neighbour4 = boardToExplore[(x + 1) % xDimension][(y + 1) % yDimension];
-            if (!previousCells.contains(boardToExplore[(x + 1) % xDimension][(y + 1) % yDimension])) {
-                this.cellMapFor6px.putIfAbsent(neighbour4, new AbstractMap.SimpleEntry<>(neighbour4.getId(), SubPhase.getInstance().getSubPhaseRegionByCell(neighbour4)));
-            }
-
-            //down
-            Cell neighbour5 = boardToExplore[(x + 1) % xDimension][y];
-            if (!previousCells.contains(boardToExplore[(x + 1) % xDimension][y])) {
-                this.cellMapFor6px.putIfAbsent(neighbour5, new AbstractMap.SimpleEntry<>(neighbour5.getId(), SubPhase.getInstance().getSubPhaseRegionByCell(neighbour5)));
-            }
-
-            //down-left corner
-            Cell neighbour6 = boardToExplore[(x + 1) % xDimension][(y - 1 + yDimension) % yDimension];
-            if (!previousCells.contains(boardToExplore[(x + 1) % xDimension][(y - 1 + yDimension) % yDimension])) {
-                this.cellMapFor6px.putIfAbsent(neighbour6, new AbstractMap.SimpleEntry<>(neighbour6.getId(), SubPhase.getInstance().getSubPhaseRegionByCell(neighbour6)));
-            }
-
-            //left corner
-            Cell neighbour7 = boardToExplore[x][(y - 1 + yDimension) % yDimension];
-            if (!previousCells.contains(boardToExplore[x][(y - 1 + yDimension) % yDimension])) {
-                this.cellMapFor6px.putIfAbsent(neighbour7, new AbstractMap.SimpleEntry<>(neighbour7.getId(), SubPhase.getInstance().getSubPhaseRegionByCell(neighbour7)));
-            }
-
-            //up-left corner
-            Cell neighbour8 = boardToExplore[(x - 1 + xDimension) % xDimension][(y - 1 + yDimension) % yDimension];
-            if (!previousCells.contains(boardToExplore[(x - 1 + xDimension) % xDimension][(y - 1 + yDimension) % yDimension])) {
-                this.cellMapFor6px.putIfAbsent(neighbour8, new AbstractMap.SimpleEntry<>(neighbour8.getId(), SubPhase.getInstance().getSubPhaseRegionByCell(neighbour8)));
-            }
         }
     }
 
@@ -300,73 +437,7 @@ public class Boundaries {
             int x = regionCell.getX();
             int y = regionCell.getY();
 
-            //up
-            if (!subPhaseRegion.containsCell(boardToExplore[(x - 1 + xDimension) % xDimension][y])) {
-                this.cellMapFor2px.putIfAbsent(regionCell, new AbstractMap.SimpleEntry<>(regionCell.getId(), subPhaseRegion));
-                continue;
-            }
-
-            //up-right corner
-            if (!subPhaseRegion.containsCell(boardToExplore[(x - 1 + xDimension) % xDimension][(y + 1) % yDimension])) {
-                this.cellMapFor2px.putIfAbsent(regionCell, new AbstractMap.SimpleEntry<>(regionCell.getId(), subPhaseRegion));
-                continue;
-            }
-
-            //right
-            if (!subPhaseRegion.containsCell(boardToExplore[x][(y + 1) % yDimension])) {
-                this.cellMapFor2px.putIfAbsent(regionCell, new AbstractMap.SimpleEntry<>(regionCell.getId(), subPhaseRegion));
-                continue;
-            }
-
-            //down-right corner
-            if (!subPhaseRegion.containsCell(boardToExplore[(x + 1) % xDimension][(y + 1) % yDimension])) {
-                this.cellMapFor2px.putIfAbsent(regionCell, new AbstractMap.SimpleEntry<>(regionCell.getId(), subPhaseRegion));
-                continue;
-            }
-
-            //down
-            if (!subPhaseRegion.containsCell(boardToExplore[(x + 1) % xDimension][y])) {
-                this.cellMapFor2px.putIfAbsent(regionCell, new AbstractMap.SimpleEntry<>(regionCell.getId(), subPhaseRegion));
-                continue;
-            }
-            //down-left corner
-            if (!subPhaseRegion.containsCell(boardToExplore[(x + 1) % xDimension][(y - 1 + yDimension) % yDimension])) {
-                this.cellMapFor2px.putIfAbsent(regionCell, new AbstractMap.SimpleEntry<>(regionCell.getId(), subPhaseRegion));
-                continue;
-            }
-
-            //left corner
-            if (!subPhaseRegion.containsCell(boardToExplore[x][(y - 1 + yDimension) % yDimension])) {
-                this.cellMapFor2px.putIfAbsent(regionCell, new AbstractMap.SimpleEntry<>(regionCell.getId(), subPhaseRegion));
-                continue;
-            }
-
-            //up-left corner
-            if (!subPhaseRegion.containsCell(boardToExplore[(x - 1 + xDimension) % xDimension][(y - 1 + yDimension) % yDimension])) {
-                this.cellMapFor2px.putIfAbsent(regionCell, new AbstractMap.SimpleEntry<>(regionCell.getId(), subPhaseRegion));
-                continue;
-            }
-        }
-
-
-        //addAdditionalBoundariesOfImmutablePhaseToBoundaries();
-    }
-
-    private void findBoundaryCells() {
-        Cell[][] boardToExplore = GrainMap.getInstance().copyCurrentStep();
-        SubPhase subPhase = SubPhase.getInstance();
-        //subPhase.divideIntoRegions();
-
-        int xDimension = boardToExplore.length;
-        int yDimension = boardToExplore[0].length;
-
-        for (SubPhaseRegion subPhaseRegion : subPhase.getSubPhaseRegions()) {
-
-            for (Cell regionCell : subPhaseRegion.getRegionCells()) {
-
-                int x = regionCell.getX();
-                int y = regionCell.getY();
-
+            if (AppConfiguration.getInstance().getNeighbourType().equals("periodic")) {
                 //up
                 if (!subPhaseRegion.containsCell(boardToExplore[(x - 1 + xDimension) % xDimension][y])) {
                     this.cellMapFor2px.putIfAbsent(regionCell, new AbstractMap.SimpleEntry<>(regionCell.getId(), subPhaseRegion));
@@ -413,6 +484,174 @@ public class Boundaries {
                     this.cellMapFor2px.putIfAbsent(regionCell, new AbstractMap.SimpleEntry<>(regionCell.getId(), subPhaseRegion));
                     continue;
                 }
+            } else if (AppConfiguration.getInstance().getNeighbourType().equals("absorbing")){
+                //up
+                if (x - 1 > 0 && !subPhaseRegion.containsCell(boardToExplore[x - 1][y])) {
+                    this.cellMapFor2px.putIfAbsent(regionCell, new AbstractMap.SimpleEntry<>(regionCell.getId(), subPhaseRegion));
+                    continue;
+                }
+
+                //up-right corner
+                if (x - 1 > 0 && y + 1 < yDimension && !subPhaseRegion.containsCell(boardToExplore[x - 1][y + 1])) {
+                    this.cellMapFor2px.putIfAbsent(regionCell, new AbstractMap.SimpleEntry<>(regionCell.getId(), subPhaseRegion));
+                    continue;
+                }
+
+                //right
+                if (y + 1 < yDimension && !subPhaseRegion.containsCell(boardToExplore[x][y + 1])) {
+                    this.cellMapFor2px.putIfAbsent(regionCell, new AbstractMap.SimpleEntry<>(regionCell.getId(), subPhaseRegion));
+                    continue;
+                }
+
+                //down-right corner
+                if (x + 1 < xDimension && y + 1 < yDimension && !subPhaseRegion.containsCell(boardToExplore[x + 1][y + 1])) {
+                    this.cellMapFor2px.putIfAbsent(regionCell, new AbstractMap.SimpleEntry<>(regionCell.getId(), subPhaseRegion));
+                    continue;
+                }
+
+                //down
+                if (x + 1 < xDimension && !subPhaseRegion.containsCell(boardToExplore[x + 1][y])) {
+                    this.cellMapFor2px.putIfAbsent(regionCell, new AbstractMap.SimpleEntry<>(regionCell.getId(), subPhaseRegion));
+                    continue;
+                }
+
+                //down-left corner
+                if (x + 1 < xDimension && y - 1 > 0 && !subPhaseRegion.containsCell(boardToExplore[x + 1][y - 1])) {
+                    this.cellMapFor2px.putIfAbsent(regionCell, new AbstractMap.SimpleEntry<>(regionCell.getId(), subPhaseRegion));
+                    continue;
+                }
+
+                //left corner
+                if (y - 1 > 0 && !subPhaseRegion.containsCell(boardToExplore[x][y - 1 ])) {
+                    this.cellMapFor2px.putIfAbsent(regionCell, new AbstractMap.SimpleEntry<>(regionCell.getId(), subPhaseRegion));
+                    continue;
+                }
+
+                //up-left corner
+                if (x - 1 > 0 && y - 1 > 0 && !subPhaseRegion.containsCell(boardToExplore[x - 1][y - 1])) {
+                    this.cellMapFor2px.putIfAbsent(regionCell, new AbstractMap.SimpleEntry<>(regionCell.getId(), subPhaseRegion));
+                    continue;
+                }
+            }
+
+        }
+
+
+        //addAdditionalBoundariesOfImmutablePhaseToBoundaries();
+    }
+
+    private void findBoundaryCells() {
+        Cell[][] boardToExplore = GrainMap.getInstance().copyCurrentStep();
+        SubPhase subPhase = SubPhase.getInstance();
+        //subPhase.divideIntoRegions();
+
+        int xDimension = boardToExplore.length;
+        int yDimension = boardToExplore[0].length;
+
+        for (SubPhaseRegion subPhaseRegion : subPhase.getSubPhaseRegions()) {
+
+            for (Cell regionCell : subPhaseRegion.getRegionCells()) {
+
+                int x = regionCell.getX();
+                int y = regionCell.getY();
+
+                if (AppConfiguration.getInstance().getNeighbourType().equals("periodic")) {
+                    //up
+                    if (!subPhaseRegion.containsCell(boardToExplore[(x - 1 + xDimension) % xDimension][y])) {
+                        this.cellMapFor2px.putIfAbsent(regionCell, new AbstractMap.SimpleEntry<>(regionCell.getId(), subPhaseRegion));
+                        continue;
+                    }
+
+                    //up-right corner
+                    if (!subPhaseRegion.containsCell(boardToExplore[(x - 1 + xDimension) % xDimension][(y + 1) % yDimension])) {
+                        this.cellMapFor2px.putIfAbsent(regionCell, new AbstractMap.SimpleEntry<>(regionCell.getId(), subPhaseRegion));
+                        continue;
+                    }
+
+                    //right
+                    if (!subPhaseRegion.containsCell(boardToExplore[x][(y + 1) % yDimension])) {
+                        this.cellMapFor2px.putIfAbsent(regionCell, new AbstractMap.SimpleEntry<>(regionCell.getId(), subPhaseRegion));
+                        continue;
+                    }
+
+                    //down-right corner
+                    if (!subPhaseRegion.containsCell(boardToExplore[(x + 1) % xDimension][(y + 1) % yDimension])) {
+                        this.cellMapFor2px.putIfAbsent(regionCell, new AbstractMap.SimpleEntry<>(regionCell.getId(), subPhaseRegion));
+                        continue;
+                    }
+
+                    //down
+                    if (!subPhaseRegion.containsCell(boardToExplore[(x + 1) % xDimension][y])) {
+                        this.cellMapFor2px.putIfAbsent(regionCell, new AbstractMap.SimpleEntry<>(regionCell.getId(), subPhaseRegion));
+                        continue;
+                    }
+                    //down-left corner
+                    if (!subPhaseRegion.containsCell(boardToExplore[(x + 1) % xDimension][(y - 1 + yDimension) % yDimension])) {
+                        this.cellMapFor2px.putIfAbsent(regionCell, new AbstractMap.SimpleEntry<>(regionCell.getId(), subPhaseRegion));
+                        continue;
+                    }
+
+                    //left corner
+                    if (!subPhaseRegion.containsCell(boardToExplore[x][(y - 1 + yDimension) % yDimension])) {
+                        this.cellMapFor2px.putIfAbsent(regionCell, new AbstractMap.SimpleEntry<>(regionCell.getId(), subPhaseRegion));
+                        continue;
+                    }
+
+                    //up-left corner
+                    if (!subPhaseRegion.containsCell(boardToExplore[(x - 1 + xDimension) % xDimension][(y - 1 + yDimension) % yDimension])) {
+                        this.cellMapFor2px.putIfAbsent(regionCell, new AbstractMap.SimpleEntry<>(regionCell.getId(), subPhaseRegion));
+                        continue;
+                    }
+                } else if (AppConfiguration.getInstance().getNeighbourType().equals("absorbing")) {
+                    //up
+                    if (x - 1 > 0 && !subPhaseRegion.containsCell(boardToExplore[x - 1][y])) {
+                        this.cellMapFor2px.putIfAbsent(regionCell, new AbstractMap.SimpleEntry<>(regionCell.getId(), subPhaseRegion));
+                        continue;
+                    }
+
+                    //up-right corner
+                    if (x - 1 > 0 && y + 1 < yDimension && !subPhaseRegion.containsCell(boardToExplore[x - 1][y + 1])) {
+                        this.cellMapFor2px.putIfAbsent(regionCell, new AbstractMap.SimpleEntry<>(regionCell.getId(), subPhaseRegion));
+                        continue;
+                    }
+
+                    //right
+                    if (y + 1 < yDimension && !subPhaseRegion.containsCell(boardToExplore[x][y + 1])) {
+                        this.cellMapFor2px.putIfAbsent(regionCell, new AbstractMap.SimpleEntry<>(regionCell.getId(), subPhaseRegion));
+                        continue;
+                    }
+
+                    //down-right corner
+                    if (x + 1 < xDimension && y + 1 < yDimension && !subPhaseRegion.containsCell(boardToExplore[x + 1][y + 1])) {
+                        this.cellMapFor2px.putIfAbsent(regionCell, new AbstractMap.SimpleEntry<>(regionCell.getId(), subPhaseRegion));
+                        continue;
+                    }
+
+                    //down
+                    if (x + 1 < xDimension && !subPhaseRegion.containsCell(boardToExplore[x + 1][y])) {
+                        this.cellMapFor2px.putIfAbsent(regionCell, new AbstractMap.SimpleEntry<>(regionCell.getId(), subPhaseRegion));
+                        continue;
+                    }
+
+                    //down-left corner
+                    if (x + 1 < xDimension && y - 1 > 0 && !subPhaseRegion.containsCell(boardToExplore[x + 1][y - 1])) {
+                        this.cellMapFor2px.putIfAbsent(regionCell, new AbstractMap.SimpleEntry<>(regionCell.getId(), subPhaseRegion));
+                        continue;
+                    }
+
+                    //left corner
+                    if (y - 1 > 0 && !subPhaseRegion.containsCell(boardToExplore[x][y - 1 ])) {
+                        this.cellMapFor2px.putIfAbsent(regionCell, new AbstractMap.SimpleEntry<>(regionCell.getId(), subPhaseRegion));
+                        continue;
+                    }
+
+                    //up-left corner
+                    if (x - 1 > 0 && y - 1 > 0 && !subPhaseRegion.containsCell(boardToExplore[x - 1][y - 1])) {
+                        this.cellMapFor2px.putIfAbsent(regionCell, new AbstractMap.SimpleEntry<>(regionCell.getId(), subPhaseRegion));
+                        continue;
+                    }
+                }
+
             }
         }
 
@@ -434,55 +673,107 @@ public class Boundaries {
                     int y = j;
 
                     SubPhaseRegion s = SubPhase.getInstance().getSubPhaseRegionByCell(boardToExplore[i][j]);
-                    //immutable condition will be enough
-                    //up
-                    if (!boardToExplore[(x - 1 + xDimension) % xDimension][y].isImmutablePhase()) {
-                        this.cellMapFor2px.putIfAbsent(boardToExplore[i][j], new AbstractMap.SimpleEntry<>(boardToExplore[i][j].getId(), s));
-                        continue;
+
+                    if (AppConfiguration.getInstance().getNeighbourType().equals("periodic")) {
+                        //up
+                        if (!boardToExplore[(x - 1 + xDimension) % xDimension][y].isImmutablePhase()) {
+                            this.cellMapFor2px.putIfAbsent(boardToExplore[i][j], new AbstractMap.SimpleEntry<>(boardToExplore[i][j].getId(), s));
+                            continue;
+                        }
+
+                        //up-right corner
+                        //if (!boardToExplore[(x - 1 + xDimension) % xDimension][(y + 1) % yDimension].isImmutableOrEmptyOrInclusion()) {
+                        if (!boardToExplore[(x - 1 + xDimension) % xDimension][(y + 1) % yDimension].isImmutablePhase()) {
+                            this.cellMapFor2px.putIfAbsent(boardToExplore[i][j], new AbstractMap.SimpleEntry<>(boardToExplore[i][j].getId(), s));
+                            continue;
+                        }
+
+                        //right
+                        if (!boardToExplore[x][(y + 1) % yDimension].isImmutablePhase()) {
+                            this.cellMapFor2px.putIfAbsent(boardToExplore[i][j], new AbstractMap.SimpleEntry<>(boardToExplore[i][j].getId(), s));
+                            continue;
+                        }
+
+                        //down-right corner
+                        if (!boardToExplore[(x + 1) % xDimension][(y + 1) % yDimension].isImmutablePhase()) {
+                            this.cellMapFor2px.putIfAbsent(boardToExplore[i][j], new AbstractMap.SimpleEntry<>(boardToExplore[i][j].getId(), s));
+                            continue;
+                        }
+
+                        //down
+                        if (!boardToExplore[(x + 1) % xDimension][y].isImmutablePhase()) {
+                            this.cellMapFor2px.putIfAbsent(boardToExplore[i][j], new AbstractMap.SimpleEntry<>(boardToExplore[i][j].getId(), s));
+                            continue;
+                        }
+
+                        //down-left corner
+                        if (!boardToExplore[(x + 1) % xDimension][(y - 1 + yDimension) % yDimension].isImmutablePhase()) {
+                            this.cellMapFor2px.putIfAbsent(boardToExplore[i][j], new AbstractMap.SimpleEntry<>(boardToExplore[i][j].getId(), s));
+                            continue;
+                        }
+
+                        //left corner
+                        if (!boardToExplore[x][(y - 1 + yDimension) % yDimension].isImmutablePhase()) {
+                            this.cellMapFor2px.putIfAbsent(boardToExplore[i][j], new AbstractMap.SimpleEntry<>(boardToExplore[i][j].getId(), s));
+                            continue;
+                        }
+
+                        //up-left corner
+                        if (!boardToExplore[(x - 1 + xDimension) % xDimension][(y - 1 + yDimension) % yDimension].isImmutablePhase()) {
+                            this.cellMapFor2px.putIfAbsent(boardToExplore[i][j], new AbstractMap.SimpleEntry<>(boardToExplore[i][j].getId(), s));
+                            continue;
+                        }
+                    } else if (AppConfiguration.getInstance().getNeighbourType().equals("absorbing")) {
+                        //up
+                        if (x - 1 > 0 && !boardToExplore[x - 1][y].isImmutablePhase()) {
+                            this.cellMapFor2px.putIfAbsent(boardToExplore[i][j], new AbstractMap.SimpleEntry<>(boardToExplore[i][j].getId(), s));
+                            continue;
+                        }
+
+                        //up-right corner
+                        if (x - 1 > 0 && y + 1 < yDimension && !boardToExplore[x - 1][y + 1].isImmutablePhase()) {
+                            this.cellMapFor2px.putIfAbsent(boardToExplore[i][j], new AbstractMap.SimpleEntry<>(boardToExplore[i][j].getId(), s));
+                            continue;
+                        }
+
+                        //right
+                        if (y + 1 < yDimension && !boardToExplore[x][y + 1].isImmutablePhase()) {
+                            this.cellMapFor2px.putIfAbsent(boardToExplore[i][j], new AbstractMap.SimpleEntry<>(boardToExplore[i][j].getId(), s));
+                            continue;
+                        }
+
+                        //down-right corner
+                        if (x + 1 < xDimension && y + 1 < yDimension && !boardToExplore[x + 1][y + 1].isImmutablePhase()) {
+                            this.cellMapFor2px.putIfAbsent(boardToExplore[i][j], new AbstractMap.SimpleEntry<>(boardToExplore[i][j].getId(), s));
+                            continue;
+                        }
+
+                        //down
+                        if (x + 1 < xDimension && !boardToExplore[x + 1][y].isImmutablePhase()) {
+                            this.cellMapFor2px.putIfAbsent(boardToExplore[i][j], new AbstractMap.SimpleEntry<>(boardToExplore[i][j].getId(), s));
+                            continue;
+                        }
+
+                        //down-left corner
+                        if (x + 1 < xDimension && y - 1 > 0 && !boardToExplore[x + 1][y - 1].isImmutablePhase()) {
+                            this.cellMapFor2px.putIfAbsent(boardToExplore[i][j], new AbstractMap.SimpleEntry<>(boardToExplore[i][j].getId(), s));
+                            continue;
+                        }
+
+                        //left corner
+                        if (y - 1 > 0 && !boardToExplore[x][y - 1 ].isImmutablePhase()) {
+                            this.cellMapFor2px.putIfAbsent(boardToExplore[i][j], new AbstractMap.SimpleEntry<>(boardToExplore[i][j].getId(), s));
+                            continue;
+                        }
+
+                        //up-left corner
+                        if (x - 1 > 0 && y - 1 > 0 && !boardToExplore[x - 1][y - 1].isImmutablePhase()) {
+                            this.cellMapFor2px.putIfAbsent(boardToExplore[i][j], new AbstractMap.SimpleEntry<>(boardToExplore[i][j].getId(), s));
+                            continue;
+                        }
                     }
 
-                    //up-right corner
-                    //if (!boardToExplore[(x - 1 + xDimension) % xDimension][(y + 1) % yDimension].isImmutableOrEmptyOrInclusion()) {
-                    if (!boardToExplore[(x - 1 + xDimension) % xDimension][(y + 1) % yDimension].isImmutablePhase()) {
-                        this.cellMapFor2px.putIfAbsent(boardToExplore[i][j], new AbstractMap.SimpleEntry<>(boardToExplore[i][j].getId(), s));
-                        continue;
-                    }
 
-                    //right
-                    if (!boardToExplore[x][(y + 1) % yDimension].isImmutablePhase()) {
-                        this.cellMapFor2px.putIfAbsent(boardToExplore[i][j], new AbstractMap.SimpleEntry<>(boardToExplore[i][j].getId(), s));
-                        continue;
-                    }
-
-                    //down-right corner
-                    if (!boardToExplore[(x + 1) % xDimension][(y + 1) % yDimension].isImmutablePhase()) {
-                        this.cellMapFor2px.putIfAbsent(boardToExplore[i][j], new AbstractMap.SimpleEntry<>(boardToExplore[i][j].getId(), s));
-                        continue;
-                    }
-
-                    //down
-                    if (!boardToExplore[(x + 1) % xDimension][y].isImmutablePhase()) {
-                        this.cellMapFor2px.putIfAbsent(boardToExplore[i][j], new AbstractMap.SimpleEntry<>(boardToExplore[i][j].getId(), s));
-                        continue;
-                    }
-
-                    //down-left corner
-                    if (!boardToExplore[(x + 1) % xDimension][(y - 1 + yDimension) % yDimension].isImmutablePhase()) {
-                        this.cellMapFor2px.putIfAbsent(boardToExplore[i][j], new AbstractMap.SimpleEntry<>(boardToExplore[i][j].getId(), s));
-                        continue;
-                    }
-
-                    //left corner
-                    if (!boardToExplore[x][(y - 1 + yDimension) % yDimension].isImmutablePhase()) {
-                        this.cellMapFor2px.putIfAbsent(boardToExplore[i][j], new AbstractMap.SimpleEntry<>(boardToExplore[i][j].getId(), s));
-                        continue;
-                    }
-
-                    //up-left corner
-                    if (!boardToExplore[(x - 1 + xDimension) % xDimension][(y - 1 + yDimension) % yDimension].isImmutablePhase()) {
-                        this.cellMapFor2px.putIfAbsent(boardToExplore[i][j], new AbstractMap.SimpleEntry<>(boardToExplore[i][j].getId(), s));
-                        continue;
-                    }
                 }
 
             }
