@@ -63,7 +63,7 @@
       </RadioButton>
       <RadioButton fx:id="periodicRadioButton" layoutX="146.0" layoutY="152.0" mnemonicParsing="false" selected="true" text="periodic" toggleGroup="$boundaryConditions" />
       <CheckBox fx:id="startWithInclusionsCheckBox" layoutX="9.0" layoutY="399.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="154.0" text="Start with inclusions" />
-      <TextField fx:id="probabilityOfChangeField" layoutX="174.0" layoutY="363.0" prefHeight="25.0" prefWidth="45.0" text="90" />
+      <TextField fx:id="probabilityOfChangeField" layoutX="174.0" layoutY="363.0" prefHeight="25.0" prefWidth="45.0" text="50" />
       <Label layoutX="14.0" layoutY="362.0" prefHeight="28.0" prefWidth="161.0" text="Probability of change [%]" />
       <Label layoutX="30.0" layoutY="424.0" prefHeight="17.0" prefWidth="209.0" text="Dual phase &amp; substructure options:" />
       <Button fx:id="startSelectingImmutablePhasesButton" layoutX="11.0" layoutY="480.0" mnemonicParsing="false" onAction="#startSelectingImmutablePhases" prefHeight="25.0" prefWidth="121.0" text="Select dualphase" />
@@ -72,8 +72,8 @@
       <Button fx:id="addSubStructuresButton" layoutX="141.0" layoutY="480.0" mnemonicParsing="false" onAction="#addSubStructures" prefHeight="25.0" prefWidth="121.0" text="Add substructures" />
       <Slider fx:id="thicknessSlider" blockIncrement="2.0" layoutX="12.0" layoutY="558.0" majorTickUnit="2.0" max="6.0" min="2.0" minorTickCount="2" prefHeight="38.0" prefWidth="82.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" value="2.0" />
       <Label layoutX="9.0" layoutY="529.0" prefHeight="17.0" prefWidth="154.0" text="Thickness of boundaries [px]" />
-      <Button fx:id="showHideAllBoundariesButton" layoutX="99.0" layoutY="558.0" mnemonicParsing="false" onAction="#showHideAllBoundaries" prefHeight="25.0" prefWidth="179.0" text="Show all grains' boundaries" />
-      <Button fx:id="showBoundariesOfParticularGrainButton" layoutX="11.0" layoutY="604.0" mnemonicParsing="false" onAction="#showBoundariesOfParticularGrain" prefHeight="28.0" prefWidth="209.0" text="Show boundaries of particular grain" wrapText="true" />
+      <Button fx:id="showHideAllBoundariesButton" layoutX="99.0" layoutY="558.0" mnemonicParsing="false" onAction="#showHideAllBoundaries" prefHeight="25.0" prefWidth="179.0" text="Show boundaries" />
+      <Button fx:id="showBoundariesOfParticularGrainButton" layoutX="11.0" layoutY="604.0" mnemonicParsing="false" onAction="#showBoundariesOfParticularGrain" prefHeight="28.0" prefWidth="209.0" text="Mark boundaries of particular grain" wrapText="true" />
       <Button fx:id="clearSpaceButton" layoutX="226.0" layoutY="595.0" mnemonicParsing="false" onAction="#clearSpace" prefHeight="47.0" prefWidth="56.0" text="Clear space" wrapText="true" />
       <Label layoutX="35.0" layoutY="512.0" prefHeight="17.0" prefWidth="209.0" text="Grain boundary visualization options" />
       <RadioButton fx:id="curvatureTypeOfGrowth" layoutX="132.0" layoutY="337.0" mnemonicParsing="false" selected="true" text="curvature">

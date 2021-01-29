@@ -67,6 +67,7 @@ public class MainController implements Initializable {
     GrainMap grainMap;
     EventHandler<MouseEvent> selectImmutablePhasesEventHandler;
     EventHandler<MouseEvent> selectParticularGrainEventHandler;
+    boolean clearedSpace;
 
 
     @FXML
@@ -234,6 +235,7 @@ public class MainController implements Initializable {
         canvas.getGraphicsContext2D().clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         SubPhase.clear();
         Boundaries.clear();
+        clearedSpace = false;
     }
 
     public void exportDataFile() {
@@ -446,15 +448,22 @@ public class MainController implements Initializable {
 
     public void showHideAllBoundaries() {
         Boundaries.getInstance().drawBoundaries(Math.round((int) thicknessSlider.getValue()));
+
+        if(clearedSpace) {
+            clearSpace();
+        }
+
         CanvasPrinter.getInstance().generateView();
     }
 
     public void showBoundariesOfParticularGrain() {
         canvas.removeEventHandler(MouseEvent.MOUSE_CLICKED, selectImmutablePhasesEventHandler);
+
         canvas.addEventHandler(MouseEvent.MOUSE_CLICKED, selectParticularGrainEventHandler);
     }
 
     public void clearSpace() {
+        clearedSpace = true;
         Boundaries.getInstance().clearAllGrains();
         CanvasPrinter.getInstance().generateView();
     }

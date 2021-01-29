@@ -63,7 +63,6 @@ public class Neighborhood {
                     if (simpleRule.isSatisfied()) {
                         nextIdOfCurrentCell = simpleRule.getNextCellState();
                         //System.out.println("periodic returned id: " + nextIdOfCurrentCell);
-
                     }
                     break;
                 case "absorbing":

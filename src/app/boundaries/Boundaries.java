@@ -57,6 +57,9 @@ public class Boundaries {
         } else if (thickness == 6) {
             this.cellMap = cellMapFor6px;
         }
+
+
+
         markBoundaryCells();
 
 //
